@@ -1,0 +1,8 @@
+[submodule "bgfx"]
+	path = bgfx
+	url = https://github.com/bkaradzic/bgfx
+	shallow = true
+[submodule "bx"]
+	path = bx
+	url = https://github.com/bkaradzic/bx
+	shallow = true
