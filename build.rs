@@ -75,6 +75,7 @@ fn main() {
         build.file("bgfx/src/renderer_mtl.mm");
     } else {
         build.file("bgfx/src/glcontext_glx.cpp");
+        build.cpp_link_stdlib("stdc++");
     }
 
     build.compile("bgfx_sys");
@@ -88,6 +89,7 @@ fn main() {
         println!("cargo:rustc-link-lib=framework=MetalKit");
     } else {
         println!("cargo:rustc-link-lib=pthread");
+        println!("cargo:rustc-link-lib=stdc++");
     }
 }
 
