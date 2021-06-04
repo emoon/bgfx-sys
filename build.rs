@@ -4,6 +4,15 @@ fn main() {
     let mut build = cc::Build::new();
     let env = std::env::var("TARGET").unwrap();
 
+    // windows includes
+    if env.contains("windows") {
+        build.include("bx/include/compat/msvc");
+        build.include("bgfx/3rdparty/dxsdk/include");
+    } else if env.contains("darwin") {
+        // macOS includes
+        build.include("bx/include/compat/osx");
+    }
+
     // add shared include dirs
     build.include("bgfx/3rdparty/khronos");
     build.include("bgfx/3rdparty");
@@ -15,15 +24,6 @@ fn main() {
     build.include("bimg/3rdparty/iqa/include");
     build.include("bimg/3rdparty/astc-codec/include");
 
-    // windows includes
-    if env.contains("windows") {
-        build.include("bx/include/compat/msvc");
-        build.include("bgfx/3rdparty/dxsdk/include");
-    } else if env.contains("darwin") {
-        // macOS includes
-        build.include("bx/include/compat/osx");
-    }
-
     // defines - Currently not supporting WebGPU, GNM and Vulkan
     // OS support:
     // Windows - DX11
@@ -34,8 +34,20 @@ fn main() {
     build.define("BGFX_CONFIG_RENDERER_GNM", "0");
     build.define("BGFX_CONFIG_RENDERER_VULKAN", "0");
 
+    //
     if env.contains("windows") {
+        build.define("BIMG_DECODE_ASTC", "0");
         build.define("BGFX_CONFIG_RENDERER_DIRECT3D11", "1");
+		build.define("_WIN32", None);
+		build.define("_HAS_EXCEPTIONS", "0");
+		build.define("_SCL_SECURE", "0");
+		build.define("_SECURE_SCL", "0");
+		build.define("__STDC_LIMIT_MACROS", None);
+		build.define("__STDC_FORMAT_MACROS", None);
+		build.define("__STDC_CONSTANT_MACROS", None);
+		build.define("_CRT_SECURE_NO_WARNINGS", None);
+		build.define("_CRT_SECURE_NO_DEPRECATE", None);
+        build.warnings(false);
     } else if env.contains("darwin") {
         build.define("BGFX_CONFIG_RENDERER_METAL", "1");
     } else {
@@ -47,10 +59,8 @@ fn main() {
     build.file("bimg/src/image.cpp");
     build.file("bimg/src/image_cubemap_filter.cpp");
     build.file("bimg/src/image_decode.cpp");
-    build.file("bimg/src/image_encode.cpp");
+    // build.file("bimg/src/image_encode.cpp");
     build.file("bimg/src/image_gnf.cpp");
-    build.file("bimg/src/image.cpp");
-    build.file("bimg/src/image.cpp");
     build.file("bgfx/src/bgfx.cpp");
     build.file("bgfx/src/vertexlayout.cpp");
     build.file("bgfx/src/debug_renderdoc.cpp");

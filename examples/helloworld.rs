@@ -7,6 +7,34 @@ use std::mem::MaybeUninit;
 const WIDTH: usize = 640;
 const HEIGHT: usize = 360;
 
+#[cfg(target_os = "linux")]
+unsafe fn update_platform_handle(pd: &mut bgfx_platform_data_t, window: &Window) {
+    let raw_handle = window.raw_window_handle();
+
+    match raw_handle {
+        RawWindowHandle::Xlib(x_data) => {
+            pd.ndt = x_data.display;
+            pd.nwh = x_data.window as *mut c_void;
+        }
+
+        _ => panic!("Unsupported window type"),
+    }
+}
+
+#[cfg(target_os = "windows")]
+unsafe fn update_platform_handle(pd: &mut bgfx_platform_data_t, window: &Window) {
+    let raw_handle = window.raw_window_handle();
+
+    match raw_handle {
+        RawWindowHandle::Windows(data) => {
+            pd.nwh = data.hwnd as *mut c_void;
+        }
+
+        _ => panic!("Unsupported window type"),
+    }
+}
+
+
 fn main() {
     let mut window = Window::new(
         "Helloworld bgfx-sys - ESC to exit",
@@ -25,17 +53,7 @@ fn main() {
         let pd = MaybeUninit::<bgfx_platform_data_t>::zeroed();
         let mut pd = pd.assume_init();
 
-        let raw_handle = window.raw_window_handle();
-
-        match raw_handle {
-            RawWindowHandle::Xlib(x_data) => {
-                pd.ndt = x_data.display;
-                pd.nwh = x_data.window as *mut c_void;
-            }
-
-            _ => panic!("Unsupported window type"),
-        }
-
+        update_platform_handle(&mut pd, &window);
         bgfx_set_platform_data(&pd);
 
         let init = MaybeUninit::<bgfx_init_t>::zeroed();
@@ -55,7 +73,7 @@ fn main() {
         // Enable debug text.
         bgfx_set_debug(BGFX_DEBUG_TEXT);
 
-        bgfx_set_view_clear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0, 0);
+        bgfx_set_view_clear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0xff3030ff, 1.0, 0);
     }
 
     // just make sure we sleep some in case we run unsynced
