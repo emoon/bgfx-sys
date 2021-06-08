@@ -1,5 +1,3 @@
-use cc;
-
 fn main() {
     let mut build = cc::Build::new();
     let env = std::env::var("TARGET").unwrap();
@@ -29,14 +27,20 @@ fn main() {
     // Windows - DX11
     // macOS - Metal
     // Posix - OpenGL
+    // In the future it would be good to make this configurable instead
 
     build.define("BGFX_CONFIG_RENDERER_WEBGPU", "0");
     build.define("BGFX_CONFIG_RENDERER_GNM", "0");
     build.define("BGFX_CONFIG_RENDERER_VULKAN", "0");
 
-    //
+    // Make it optional to enable bgfx debug setting
+    #[cfg(feature = "bgfx-debug")]
+    { build.define("BGFX_CONFIG_DEBUG", "1") }
+
+    // Don't include decode of ASTC to reduce code size and is unlikely a common use-case.
+    build.define("BIMG_DECODE_ASTC", "0");
+
     if env.contains("windows") {
-        build.define("BIMG_DECODE_ASTC", "0");
         build.define("BGFX_CONFIG_RENDERER_DIRECT3D11", "1");
 		build.define("_WIN32", None);
 		build.define("_HAS_EXCEPTIONS", "0");
@@ -51,7 +55,7 @@ fn main() {
     } else if env.contains("darwin") {
         build.define("BGFX_CONFIG_RENDERER_METAL", "1");
     } else {
-        build.define("BGFX_CONFIG_OPENGL", "1");
+        build.define("BGFX_CONFIG_RENDERER_OPENGL", "1");
     }
 
     // sources
@@ -59,7 +63,6 @@ fn main() {
     build.file("bimg/src/image.cpp");
     build.file("bimg/src/image_cubemap_filter.cpp");
     build.file("bimg/src/image_decode.cpp");
-    // build.file("bimg/src/image_encode.cpp");
     build.file("bimg/src/image_gnf.cpp");
     build.file("bgfx/src/bgfx.cpp");
     build.file("bgfx/src/vertexlayout.cpp");
@@ -93,13 +96,14 @@ fn main() {
     // linker stuff
     if env.contains("windows") {
         // todo fixme
-        println!("cargo:rustc-link-lib=opengl32");
     } else if env.contains("darwin") {
         println!("cargo:rustc-link-lib=framework=Metal");
         println!("cargo:rustc-link-lib=framework=MetalKit");
     } else {
         println!("cargo:rustc-link-lib=pthread");
         println!("cargo:rustc-link-lib=stdc++");
+        println!("cargo:rustc-link-lib=GL");
+        println!("cargo:rustc-link-lib=X11");
     }
 }
 

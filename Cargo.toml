@@ -10,10 +10,13 @@ build = "build.rs"
 maintenance = {status = "actively-developed"}
 
 [dev-dependencies]
-minifb = "0.19.3"
-raw-window-handle = "0.3.3"
+glfw = "0.41"
+raw-window-handle = "0.3"
 
 [build-dependencies]
 cc = { version = "1.0", features = ["parallel"] }
 
 [dependencies]
+
+[features]
+bgfx-debug = []
