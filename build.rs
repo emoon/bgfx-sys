@@ -35,7 +35,9 @@ fn main() {
 
     // Make it optional to enable bgfx debug setting
     #[cfg(feature = "bgfx-debug")]
-    { build.define("BGFX_CONFIG_DEBUG", "1"); }
+    {
+        build.define("BGFX_CONFIG_DEBUG", "1");
+    }
 
     // Don't include decode of ASTC to reduce code size and is unlikely a common use-case.
     build.define("BIMG_DECODE_ASTC", "0");
@@ -43,15 +45,15 @@ fn main() {
 
     if env.contains("windows") {
         build.define("BGFX_CONFIG_RENDERER_DIRECT3D11", "1");
-		build.define("_WIN32", None);
-		build.define("_HAS_EXCEPTIONS", "0");
-		build.define("_SCL_SECURE", "0");
-		build.define("_SECURE_SCL", "0");
-		build.define("__STDC_LIMIT_MACROS", None);
-		build.define("__STDC_FORMAT_MACROS", None);
-		build.define("__STDC_CONSTANT_MACROS", None);
-		build.define("_CRT_SECURE_NO_WARNINGS", None);
-		build.define("_CRT_SECURE_NO_DEPRECATE", None);
+        build.define("_WIN32", None);
+        build.define("_HAS_EXCEPTIONS", "0");
+        build.define("_SCL_SECURE", "0");
+        build.define("_SECURE_SCL", "0");
+        build.define("__STDC_LIMIT_MACROS", None);
+        build.define("__STDC_FORMAT_MACROS", None);
+        build.define("__STDC_CONSTANT_MACROS", None);
+        build.define("_CRT_SECURE_NO_WARNINGS", None);
+        build.define("_CRT_SECURE_NO_DEPRECATE", None);
         build.warnings(false);
     } else if env.contains("darwin") {
         build.define("BGFX_CONFIG_RENDERER_METAL", "1");
@@ -107,4 +109,3 @@ fn main() {
         println!("cargo:rustc-link-lib=X11");
     }
 }
-

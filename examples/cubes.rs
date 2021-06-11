@@ -236,7 +236,8 @@ fn main() -> std::io::Result<()> {
 
             let aspect = size.0 as f32 / size.1 as f32;
 
-            let persp = Mat4::perspective_lh(60.0 * (std::f32::consts::PI / 180.0), aspect, 0.1, 100.0);
+            let persp =
+                Mat4::perspective_lh(60.0 * (std::f32::consts::PI / 180.0), aspect, 0.1, 100.0);
             let view = Mat4::look_at_lh(eye, at, up);
 
             bgfx_set_view_rect(0, 0, 0, size.0 as _, size.1 as _);
