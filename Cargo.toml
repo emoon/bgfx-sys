@@ -12,6 +12,7 @@ maintenance = {status = "actively-developed"}
 [dev-dependencies]
 glfw = "0.41"
 raw-window-handle = "0.3"
+glam = "0.15"
 
 [build-dependencies]
 cc = { version = "1.0", features = ["parallel"] }
