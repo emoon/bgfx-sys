@@ -1,6 +1,7 @@
 [package]
-license = "MIT"
+license = "BSD-2-Clause"
 authors = ["Daniel Collin <daniel@collin.com>"]
+categories = ["rendering::graphics-api"]
 name = "bgfx-sys"
 version = "0.1.0"
 edition = "2018"
