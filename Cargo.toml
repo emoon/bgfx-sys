@@ -13,7 +13,14 @@ build = "build.rs"
 exclude = [
     "bgfx/bindings",
     "bgfx/examples",
-    "bgfx/3rdparty",
+    "bgfx/3rdparty/cgltf",
+    "bgfx/3rdparty/dear-imgui",
+    "bgfx/3rdparty/glslang",
+    "bgfx/3rdparty/fcpp",
+    "bgfx/3rdparty/glsl-optimizer",
+    "bgfx/3rdparty/spirv-cross",
+    "bgfx/3rdparty/spirv-headers",
+    "bgfx/3rdparty/spirv-tools",
     "bgfx/tools",
 ]
 
