@@ -11,10 +11,10 @@ edition = "2018"
 build = "build.rs"
 
 exclude = [
-    "bgfx/bindings"
-    "bgfx/examples"
-    "bgfx/3rdparty"
-    "bgfx/tools"
+    "bgfx/bindings",
+    "bgfx/examples",
+    "bgfx/3rdparty",
+    "bgfx/tools",
 ]
 
 [badges]
