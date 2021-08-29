@@ -277,18 +277,18 @@
 #define BGFX_DEBUG_TEXT                           (0x00000008) //!< Enable debug text display.
 #define BGFX_DEBUG_PROFILER                       (0x00000010) //!< Enable profiler.
 
-#define BGFX_BUFFER_COMPUTE_FORMAT_8X1            (0x0001) //!< 1 8-bit value
-#define BGFX_BUFFER_COMPUTE_FORMAT_8X2            (0x0002) //!< 2 8-bit values
-#define BGFX_BUFFER_COMPUTE_FORMAT_8X4            (0x0003) //!< 4 8-bit values
-#define BGFX_BUFFER_COMPUTE_FORMAT_16X1           (0x0004) //!< 1 16-bit value
-#define BGFX_BUFFER_COMPUTE_FORMAT_16X2           (0x0005) //!< 2 16-bit values
-#define BGFX_BUFFER_COMPUTE_FORMAT_16X4           (0x0006) //!< 4 16-bit values
-#define BGFX_BUFFER_COMPUTE_FORMAT_32X1           (0x0007) //!< 1 32-bit value
-#define BGFX_BUFFER_COMPUTE_FORMAT_32X2           (0x0008) //!< 2 32-bit values
-#define BGFX_BUFFER_COMPUTE_FORMAT_32X4           (0x0009) //!< 4 32-bit values
-#define BGFX_BUFFER_COMPUTE_FORMAT_SHIFT          0
+#define BGFX_BUFFER_COMPUTE_FORMAT_F8X1           (0x0001) //!< 1 8-bit value
+#define BGFX_BUFFER_COMPUTE_FORMAT_F8X2           (0x0002) //!< 2 8-bit values
+#define BGFX_BUFFER_COMPUTE_FORMAT_F8X4           (0x0003) //!< 4 8-bit values
+#define BGFX_BUFFER_COMPUTE_FORMAT_F16X1          (0x0004) //!< 1 16-bit value
+#define BGFX_BUFFER_COMPUTE_FORMAT_F16X2          (0x0005) //!< 2 16-bit values
+#define BGFX_BUFFER_COMPUTE_FORMAT_F16X4          (0x0006) //!< 4 16-bit values
+#define BGFX_BUFFER_COMPUTE_FORMAT_F32X1          (0x0007) //!< 1 32-bit value
+#define BGFX_BUFFER_COMPUTE_FORMAT_F32X2          (0x0008) //!< 2 32-bit values
+#define BGFX_BUFFER_COMPUTE_FORMAT_F32X4          (0x0009) //!< 4 32-bit values
+#define BGFX_BUFFER_COMPUTE_FORMAT_FSHIFT         0
 
-#define BGFX_BUFFER_COMPUTE_FORMAT_MASK           (0x000f)
+#define BGFX_BUFFER_COMPUTE_FORMAT_FMASK          (0x000f)
 
 #define BGFX_BUFFER_COMPUTE_TYPE_INT              (0x0010) //!< Type `int`.
 #define BGFX_BUFFER_COMPUTE_TYPE_UINT             (0x0020) //!< Type `uint`.
