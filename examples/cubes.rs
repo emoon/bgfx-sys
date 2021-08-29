@@ -113,6 +113,16 @@ unsafe fn load_shader_program(vs: &str, ps: &str) -> std::io::Result<bgfx_progra
     Ok(program)
 }
 
+#[cfg(target_os = "linux")]
+fn get_render_type() -> u32 {
+    BGFX_RENDERER_TYPE_OPENGL
+}
+
+#[cfg(not(target_os = "linux"))]
+fn get_render_type() -> u32 {
+    BGFX_RENDERER_TYPE_COUNT
+}
+
 fn main() -> std::io::Result<()> {
     let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
 
@@ -139,7 +149,7 @@ fn main() -> std::io::Result<()> {
         let mut init = init.assume_init();
         bgfx_init_ctor(&mut init);
 
-        init.type_ = BGFX_RENDERER_TYPE_COUNT;
+        init.type_ = get_render_type();
         init.resolution.width = WIDTH as u32;
         init.resolution.height = HEIGHT as u32;
         init.resolution.reset = BGFX_RESET_VSYNC;
