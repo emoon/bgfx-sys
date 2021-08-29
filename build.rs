@@ -32,7 +32,6 @@ fn main() {
 
     build.define("BGFX_CONFIG_RENDERER_WEBGPU", "0");
     build.define("BGFX_CONFIG_RENDERER_GNM", "0");
-    build.define("BGFX_CONFIG_RENDERER_VULKAN", "0");
 
     // Make it optional to enable bgfx debug setting
     #[cfg(feature = "bgfx-debug")]
@@ -45,6 +44,7 @@ fn main() {
     //build.define("BGFX_CONFIG_MULTITHREADED", "0");
 
     if env.contains("windows") {
+        build.define("BGFX_CONFIG_RENDERER_VULKAN", "1");
         build.define("BGFX_CONFIG_RENDERER_DIRECT3D11", "1");
         build.define("_WIN32", None);
         build.define("_HAS_EXCEPTIONS", "0");
@@ -57,8 +57,10 @@ fn main() {
         build.define("_CRT_SECURE_NO_DEPRECATE", None);
         build.warnings(false);
     } else if env.contains("darwin") {
+        build.define("BGFX_CONFIG_RENDERER_VULKAN", "0");
         build.define("BGFX_CONFIG_RENDERER_METAL", "1");
     } else {
+        build.define("BGFX_CONFIG_RENDERER_VULKAN", "1");
         build.define("BGFX_CONFIG_RENDERER_OPENGL", "1");
     }
 
@@ -72,6 +74,7 @@ fn main() {
     build.file("bgfx/src/vertexlayout.cpp");
     build.file("bgfx/src/debug_renderdoc.cpp");
     build.file("bgfx/src/topology.cpp");
+    build.file("bgfx/src/shader.cpp");
     build.file("bgfx/src/shader_dxbc.cpp");
     build.file("bgfx/src/renderer_agc.cpp");
     build.file("bgfx/src/renderer_gnm.cpp");
