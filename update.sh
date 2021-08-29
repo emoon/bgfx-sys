@@ -13,3 +13,8 @@ rm -rf bgfx/.git
 rm -rf bx/.git
 rm -rf bimg/.git
 rm -rf temp
+# The SIZE_C(x) macros casuse issues for bindgen so we remove them
+sed -i 's/UINT8_C//' bgfx/include/bgfx/defines.h
+sed -i 's/UINT16_C//' bgfx/include/bgfx/defines.h
+sed -i 's/UINT32_C//' bgfx/include/bgfx/defines.h
+sed -i 's/UINT64_C//' bgfx/include/bgfx/defines.h

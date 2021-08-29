@@ -21,6 +21,7 @@ fn main() {
     build.include("bimg/3rdparty");
     build.include("bimg/3rdparty/iqa/include");
     build.include("bimg/3rdparty/astc-codec/include");
+    build.include("bimg/3rdparty/tinyexr/deps/miniz");
 
     // defines - Currently not supporting WebGPU, GNM and Vulkan
     // OS support:
@@ -72,6 +73,7 @@ fn main() {
     build.file("bgfx/src/debug_renderdoc.cpp");
     build.file("bgfx/src/topology.cpp");
     build.file("bgfx/src/shader_dxbc.cpp");
+    build.file("bgfx/src/renderer_agc.cpp");
     build.file("bgfx/src/renderer_gnm.cpp");
     build.file("bgfx/src/renderer_webgpu.cpp");
     build.file("bgfx/src/renderer_nvn.cpp");
