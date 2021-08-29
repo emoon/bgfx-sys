@@ -150,7 +150,7 @@ fn main() -> std::io::Result<()> {
         }
 
         bgfx_set_debug(BGFX_DEBUG_TEXT);
-        bgfx_set_view_clear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x103030ff, 1.0, 0);
+        bgfx_set_view_clear(0, (BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH) as _, 0x103030ff, 1.0, 0);
 
         // Setup vertex layout
 
@@ -187,14 +187,12 @@ fn main() -> std::io::Result<()> {
             (std::mem::size_of::<u16>() * 36) as _,
         );
 
-        let vbh = bgfx_create_vertex_buffer(vertices_mem, &mut vertex_layout, BGFX_BUFFER_NONE);
-        let ibh = bgfx_create_index_buffer(index_mem, BGFX_BUFFER_NONE);
+        let vbh = bgfx_create_vertex_buffer(vertices_mem, &mut vertex_layout, BGFX_BUFFER_NONE as _);
+        let ibh = bgfx_create_index_buffer(index_mem, BGFX_BUFFER_NONE as _);
 
         // create the shaders
 
         let shader_program = load_shader_program("vs_cubes", "fs_cubes")?;
-
-        //BGFX_C_API const bgfx_memory_t* bgfx_make_ref(const void* _data, uint32_t _size);
 
         let mut old_size = (0, 0);
 
@@ -202,13 +200,13 @@ fn main() -> std::io::Result<()> {
         let eye = Vec3::new(0.0, 0.0, -35.0);
         let up = Vec3::new(0.0, 1.0, 0.0);
 
-        let state = BGFX_STATE_WRITE_R
-            | BGFX_STATE_WRITE_G
-            | BGFX_STATE_WRITE_B
-            | BGFX_STATE_WRITE_A
-            | BGFX_STATE_WRITE_Z
-            | BGFX_STATE_DEPTH_TEST_LESS
-            | BGFX_STATE_CULL_CW;
+        let state: u64 = BGFX_STATE_WRITE_R as u64
+            | BGFX_STATE_WRITE_G as u64
+            | BGFX_STATE_WRITE_B as u64
+            | BGFX_STATE_WRITE_A as u64
+            | BGFX_STATE_WRITE_Z as u64
+            | BGFX_STATE_DEPTH_TEST_LESS as u64
+            | BGFX_STATE_CULL_CW as u64;
 
         let time = Instant::now();
 
@@ -265,7 +263,7 @@ fn main() -> std::io::Result<()> {
                     bgfx_set_vertex_buffer(0, vbh, 0, std::u32::MAX);
                     bgfx_set_index_buffer(ibh, 0, std::u32::MAX);
                     bgfx_set_state(state, 0);
-                    bgfx_submit(0, shader_program, 0, BGFX_DISCARD_ALL);
+                    bgfx_submit(0, shader_program, 0, BGFX_DISCARD_ALL as _);
                 }
             }
 
