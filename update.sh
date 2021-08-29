@@ -9,4 +9,7 @@ rm -rf bimg
 cp -R temp/bgfx/. bgfx
 cp -R temp/bx/. bx
 cp -R temp/bimg/. bimg
+rm -rf bgfx/.git
+rm -rf bx/.git
+rm -rf bimg/.git
 rm -rf temp
