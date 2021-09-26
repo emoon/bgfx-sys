@@ -3741,7 +3741,7 @@ namespace bgfx { namespace d3d11
 		}
 		else
 		{
-			uint32_t uavFormat = (_flags & BGFX_BUFFER_COMPUTE_FORMAT_MASK) >> BGFX_BUFFER_COMPUTE_FORMAT_SHIFT;
+			uint32_t uavFormat = (_flags & BGFX_BUFFER_COMPUTE_FORMAT_FMASK) >> BGFX_BUFFER_COMPUTE_FORMAT_FSHIFT;
 			if (0 == uavFormat)
 			{
 				if (_vertex)
