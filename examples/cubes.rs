@@ -125,6 +125,7 @@ fn get_render_type() -> u32 {
 
 fn main() -> std::io::Result<()> {
     let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
+    glfw.window_hint(glfw::WindowHint::ClientApi(glfw::ClientApiHint::NoApi));
 
     let (mut window, events) = glfw
         .create_window(
@@ -136,7 +137,6 @@ fn main() -> std::io::Result<()> {
         .expect("Failed to create GLFW window.");
 
     window.set_key_polling(true);
-    window.make_current();
 
     unsafe {
         let pd = MaybeUninit::<bgfx_platform_data_t>::zeroed();
