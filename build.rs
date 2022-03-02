@@ -59,6 +59,9 @@ fn main() {
     } else if env.contains("darwin") {
         build.define("BGFX_CONFIG_RENDERER_VULKAN", "0");
         build.define("BGFX_CONFIG_RENDERER_METAL", "1");
+    } else if env.contains("android") {
+        build.define("BGFX_CONFIG_RENDERER_VULKAN", "1");
+        build.define("BGFX_CONFIG_RENDERER_OPENGLES", "1");
     } else {
         build.define("BGFX_CONFIG_RENDERER_VULKAN", "1");
         build.define("BGFX_CONFIG_RENDERER_OPENGL", "1");
