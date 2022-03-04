@@ -1,6 +1,5 @@
-use std::{thread, time};
 use bgfx_sys::*;
-use glfw::{Action, Context, Key, Window};
+use glfw::{Action, Key, Window};
 use raw_window_handle::HasRawWindowHandle;
 use raw_window_handle::RawWindowHandle;
 use std::ffi::c_void;
@@ -29,6 +28,17 @@ unsafe fn update_platform_handle(pd: &mut bgfx_platform_data_t, window: &Window)
         _ => panic!("Unsupported window type"),
     }
 }
+
+#[cfg(target_os = "macos")]
+unsafe fn update_platform_handle(pd: &mut bgfx_platform_data_t, window: &Window) {
+    match window.raw_window_handle() {
+        RawWindowHandle::MacOS(data) => {
+            pd.nwh = data.ns_window as *mut c_void;
+        }
+        _ => panic!("Unsupported window type"),
+    }
+}
+
 
 #[cfg(target_os = "linux")]
 fn get_render_type() -> u32 {
@@ -106,7 +116,6 @@ fn main() {
             bgfx_set_view_rect(0, 0, 0, size.0 as _, size.1 as _);
             bgfx_touch(0);
 
-            /*
             bgfx_dbg_text_clear(0, false);
 
             bgfx_dbg_text_printf(0, 1, 0x0f, b"Color can be changed with ANSI \x1b[9;me\x1b[10;ms\x1b[11;mc\x1b[12;ma\x1b[13;mp\x1b[14;me\x1b[0m code too.\0".as_ptr() as _);
@@ -119,7 +128,6 @@ fn main() {
                 b"Description: Initialization and debug text with bgfx-sys Rust API.\0".as_ptr()
                     as _,
             );
-            */
 
             bgfx_frame(false);
         }

@@ -9,6 +9,7 @@ fn main() {
     } else if env.contains("darwin") {
         // macOS includes
         build.include("bx/include/compat/osx");
+        build.flag("-std=c++14");
     }
 
     // add shared include dirs
@@ -38,10 +39,10 @@ fn main() {
     {
         build.define("BGFX_CONFIG_DEBUG", "1");
     }
-
+        
     // Don't include decode of ASTC to reduce code size and is unlikely a common use-case.
     build.define("BIMG_DECODE_ASTC", "0");
-    //build.define("BGFX_CONFIG_MULTITHREADED", "0");
+    build.define("BGFX_CONFIG_MULTITHREADED", "0");
 
     if env.contains("windows") {
         build.define("BGFX_CONFIG_RENDERER_VULKAN", "1");
@@ -112,6 +113,7 @@ fn main() {
     } else if env.contains("darwin") {
         println!("cargo:rustc-link-lib=framework=Metal");
         println!("cargo:rustc-link-lib=framework=MetalKit");
+        println!("cargo:rustc-link-lib=c++");
     } else {
         println!("cargo:rustc-link-lib=pthread");
         println!("cargo:rustc-link-lib=stdc++");

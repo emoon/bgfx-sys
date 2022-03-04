@@ -1,6 +1,6 @@
 use bgfx_sys::*;
 use glam::{EulerRot, Mat4, Vec3};
-use glfw::{Action, Context, Key, Window};
+use glfw::{Action, Key, Window};
 use raw_window_handle::{HasRawWindowHandle, RawWindowHandle};
 use std::{ffi::c_void, mem::MaybeUninit, path::PathBuf, time::Instant};
 
@@ -59,6 +59,16 @@ unsafe fn update_platform_handle(pd: &mut bgfx_platform_data_t, window: &Window)
     match window.raw_window_handle() {
         RawWindowHandle::Windows(data) => {
             pd.nwh = data.hwnd as *mut c_void;
+        }
+        _ => panic!("Unsupported window type"),
+    }
+}
+
+#[cfg(target_os = "macos")]
+unsafe fn update_platform_handle(pd: &mut bgfx_platform_data_t, window: &Window) {
+    match window.raw_window_handle() {
+        RawWindowHandle::MacOS(data) => {
+            pd.nwh = data.ns_window as *mut c_void;
         }
         _ => panic!("Unsupported window type"),
     }
