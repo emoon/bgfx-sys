@@ -39,7 +39,7 @@ fn main() {
     {
         build.define("BGFX_CONFIG_DEBUG", "1");
     }
-        
+
     // Don't include decode of ASTC to reduce code size and is unlikely a common use-case.
     build.define("BIMG_DECODE_ASTC", "0");
     build.define("BGFX_CONFIG_MULTITHREADED", "0");
@@ -47,6 +47,8 @@ fn main() {
     if env.contains("windows") {
         build.define("BGFX_CONFIG_RENDERER_VULKAN", "1");
         build.define("BGFX_CONFIG_RENDERER_DIRECT3D11", "1");
+        build.define("BGFX_CONFIG_RENDERER_DIRECT3D12", "1");
+        build.define("BGFX_CONFIG_RENDERER_OPENGL", "1");
         build.define("_WIN32", None);
         build.define("_HAS_EXCEPTIONS", "0");
         build.define("_SCL_SECURE", "0");
