@@ -6,6 +6,7 @@ fn main() {
     if env.contains("windows") {
         build.include("bx/include/compat/msvc");
         build.include("bgfx/3rdparty/dxsdk/include");
+        build.flag("/std:c++14");
     } else if env.contains("darwin") {
         // macOS includes
         build.include("bx/include/compat/osx");
