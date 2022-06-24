@@ -460,6 +460,8 @@
 #define BGFX_PCI_ID_INTEL (0x8086)				 //!< Intel adapter.
 #define BGFX_PCI_ID_NVIDIA (0x10de)				 //!< nVidia adapter.
 #define BGFX_PCI_ID_ARM (0x13b5)				 //!< ARM adapter.
+#define BGFX_PCI_ID_APPLE (0x106b)               //!< Apple adapter.
+
 
 #define BGFX_CUBE_MAP_POSITIVE_X (0x00) //!< Cubemap +x.
 #define BGFX_CUBE_MAP_NEGATIVE_X (0x01) //!< Cubemap -x.

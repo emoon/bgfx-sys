@@ -350,6 +350,7 @@ pub const BGFX_PCI_ID_AMD: u32 = 4098;
 pub const BGFX_PCI_ID_INTEL: u32 = 32902;
 pub const BGFX_PCI_ID_NVIDIA: u32 = 4318;
 pub const BGFX_PCI_ID_ARM: u32 = 5045;
+pub const BGFX_PCI_ID_APPLE: u32 = 0x106b;
 pub const BGFX_CUBE_MAP_POSITIVE_X: u32 = 0;
 pub const BGFX_CUBE_MAP_NEGATIVE_X: u32 = 1;
 pub const BGFX_CUBE_MAP_POSITIVE_Y: u32 = 2;
