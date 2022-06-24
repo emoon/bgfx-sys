@@ -392,6 +392,7 @@ const char* BuiltInString(int builtIn)
     case BuiltInObjectRayDirectionKHR:       return "ObjectRayDirectionKHR";
     case BuiltInRayTminKHR:                  return "RayTminKHR";
     case BuiltInRayTmaxKHR:                  return "RayTmaxKHR";
+    case BuiltInCullMaskKHR:                 return "CullMaskKHR";
     case BuiltInInstanceCustomIndexKHR:      return "InstanceCustomIndexKHR";
     case BuiltInRayGeometryIndexKHR:         return "RayGeometryIndexKHR";
     case BuiltInObjectToWorldKHR:            return "ObjectToWorldKHR";
@@ -900,6 +901,12 @@ const char* CapabilityString(int info)
     case CapabilityDeviceGroup: return "DeviceGroup";
     case CapabilityMultiView:   return "MultiView";
 
+    case CapabilityDenormPreserve:           return "DenormPreserve";
+    case CapabilityDenormFlushToZero:        return "DenormFlushToZero";
+    case CapabilitySignedZeroInfNanPreserve: return "SignedZeroInfNanPreserve";
+    case CapabilityRoundingModeRTE:          return "RoundingModeRTE";
+    case CapabilityRoundingModeRTZ:          return "RoundingModeRTZ";
+
     case CapabilityStencilExportEXT: return "StencilExportEXT";
 
     case CapabilityFloat16ImageAMD:       return "Float16ImageAMD";
@@ -919,6 +926,7 @@ const char* CapabilityString(int info)
     case CapabilityRayTracingNV:                    return "RayTracingNV";
     case CapabilityRayTracingMotionBlurNV:          return "RayTracingMotionBlurNV";
     case CapabilityRayTracingKHR:                   return "RayTracingKHR";
+    case CapabilityRayCullMaskKHR:                  return "RayCullMaskKHR";
     case CapabilityRayQueryKHR:                     return "RayQueryKHR";
     case CapabilityRayTracingProvisionalKHR:        return "RayTracingProvisionalKHR";
     case CapabilityRayTraversalPrimitiveCullingKHR: return "RayTraversalPrimitiveCullingKHR";

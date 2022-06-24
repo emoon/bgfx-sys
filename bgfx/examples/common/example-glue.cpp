@@ -1,6 +1,6 @@
 /*
- * Copyright 2011-2021 Branimir Karadzic. All rights reserved.
- * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
+ * Copyright 2011-2022 Branimir Karadzic. All rights reserved.
+ * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
 #include "imgui/imgui.h"
@@ -81,11 +81,11 @@ static bool bar(float _width, float _maxWidth, float _height, const ImVec4& _col
 
 	bool itemHovered = false;
 
-	ImGui::Button("", ImVec2(_width, _height) );
+	ImGui::Button("##", ImVec2(_width, _height) );
 	itemHovered |= ImGui::IsItemHovered();
 
 	ImGui::SameLine();
-	ImGui::InvisibleButton("", ImVec2(bx::max(1.0f, _maxWidth-_width), _height) );
+	ImGui::InvisibleButton("##", ImVec2(bx::max(1.0f, _maxWidth-_width), _height) );
 	itemHovered |= ImGui::IsItemHovered();
 
 	ImGui::PopStyleVar(2);

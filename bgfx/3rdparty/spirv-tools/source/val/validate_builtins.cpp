@@ -120,7 +120,7 @@ typedef enum VUIDError_ {
   VUIDErrorMax,
 } VUIDError;
 
-const static uint32_t NumVUIDBuiltins = 33;
+const static uint32_t NumVUIDBuiltins = 34;
 
 typedef struct {
   SpvBuiltIn builtIn;
@@ -162,6 +162,7 @@ std::array<BuiltinVUIDMapping, NumVUIDBuiltins> builtinVUIDInfo = {{
     {SpvBuiltInFragSizeEXT,               {4220, 4221, 4222}},
     {SpvBuiltInFragStencilRefEXT,         {4223, 4224, 4225}},
     {SpvBuiltInFullyCoveredEXT,           {4232, 4233, 4234}},
+    {SpvBuiltInCullMaskKHR,               {6735, 6736, 6737}},
     // clang-format off
 } };
 
@@ -208,6 +209,7 @@ bool IsExecutionModelValidForRtBuiltIn(SpvBuiltIn builtin,
     case SpvBuiltInRayTmaxKHR:
     case SpvBuiltInWorldRayDirectionKHR:
     case SpvBuiltInWorldRayOriginKHR:
+    case SpvBuiltInCullMaskKHR:
       switch (stage) {
         case SpvExecutionModelIntersectionKHR:
         case SpvExecutionModelAnyHitKHR:
@@ -3851,6 +3853,7 @@ spv_result_t BuiltInsValidator::ValidateRayTracingBuiltinsAtDefinition(
       case SpvBuiltInInstanceId:
       case SpvBuiltInRayGeometryIndexKHR:
       case SpvBuiltInIncomingRayFlagsKHR:
+      case SpvBuiltInCullMaskKHR:
         // i32 scalar
         if (spv_result_t error = ValidateI32(
                 decoration, inst,
@@ -3992,14 +3995,6 @@ spv_result_t BuiltInsValidator::ValidateRayTracingBuiltinsAtReference(
 spv_result_t BuiltInsValidator::ValidateSingleBuiltInAtDefinition(
     const Decoration& decoration, const Instruction& inst) {
   const SpvBuiltIn label = SpvBuiltIn(decoration.params()[0]);
-
-  // Builtins can only be applied to variables, structures or constants.
-  auto target_opcode = inst.opcode();
-  if (target_opcode != SpvOpTypeStruct && target_opcode != SpvOpVariable &&
-      !spvOpcodeIsConstant(target_opcode)) {
-    return _.diag(SPV_ERROR_INVALID_DATA, &inst)
-           << "BuiltIns can only target variables, structs or constants";
-  }
 
   if (!spvIsVulkanEnv(_.context()->target_env)) {
     // Early return. All currently implemented rules are based on Vulkan spec.
@@ -4159,7 +4154,8 @@ spv_result_t BuiltInsValidator::ValidateSingleBuiltInAtDefinition(
     case SpvBuiltInObjectToWorldKHR:        // alias SpvBuiltInObjectToWorldNV
     case SpvBuiltInWorldToObjectKHR:        // alias SpvBuiltInWorldToObjectNV
     case SpvBuiltInIncomingRayFlagsKHR:    // alias SpvBuiltInIncomingRayFlagsNV
-    case SpvBuiltInRayGeometryIndexKHR: {  // NOT present in NV
+    case SpvBuiltInRayGeometryIndexKHR:    // NOT present in NV
+    case SpvBuiltInCullMaskKHR: {
       return ValidateRayTracingBuiltinsAtDefinition(decoration, inst);
     }
     case SpvBuiltInWorkDim:

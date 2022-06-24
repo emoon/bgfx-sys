@@ -1,6 +1,6 @@
 /*
- * Copyright 2011-2021 Branimir Karadzic. All rights reserved.
- * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
+ * Copyright 2011-2022 Branimir Karadzic. All rights reserved.
+ * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
 #include "bgfx_p.h"
@@ -122,6 +122,7 @@ namespace bgfx
 		, m_factory(NULL)
 		, m_adapter(NULL)
 		, m_output(NULL)
+		, m_tearingSupported(false)
 	{
 	}
 
@@ -205,10 +206,20 @@ namespace bgfx
 							, desc.SubSysId
 							, desc.Revision
 							);
-						BX_TRACE("\tMemory: %" PRIi64 " (video), %" PRIi64 " (system), %" PRIi64 " (shared)"
-							, desc.DedicatedVideoMemory
-							, desc.DedicatedSystemMemory
-							, desc.SharedSystemMemory
+
+						char dedicatedVideo[16];
+						bx::prettify(dedicatedVideo, BX_COUNTOF(dedicatedVideo), desc.DedicatedVideoMemory);
+
+						char dedicatedSystem[16];
+						bx::prettify(dedicatedSystem, BX_COUNTOF(dedicatedSystem), desc.DedicatedSystemMemory);
+
+						char sharedSystem[16];
+						bx::prettify(sharedSystem, BX_COUNTOF(sharedSystem), desc.SharedSystemMemory);
+
+						BX_TRACE("\tMemory: %s (video), %s (system), %s (shared)"
+							, dedicatedVideo
+							, dedicatedSystem
+							, sharedSystem
 							);
 
 						_caps.gpu[ii].vendorId = (uint16_t)desc.VendorId;
@@ -389,6 +400,8 @@ namespace bgfx
 				: 0
 				;
 
+			m_tearingSupported = allowTearing;
+
 			DX_RELEASE_I(factory5);
 		}
 
@@ -414,17 +427,6 @@ namespace bgfx
 			, &scd
 			, reinterpret_cast<IDXGISwapChain**>(_swapChain)
 			);
-
-		if (SUCCEEDED(hr) )
-		{
-			IDXGIDevice1* dxgiDevice1;
-			_device->QueryInterface(IID_IDXGIDevice1, (void**)&dxgiDevice1);
-			if (NULL != dxgiDevice1)
-			{
-				dxgiDevice1->SetMaximumFrameLatency(_scd.maxFrameLatency);
-				DX_RELEASE_I(dxgiDevice1);
-			}
-		}
 #else
 		DXGI_SWAP_CHAIN_DESC1 scd;
 		scd.Width  = _scd.width;
@@ -525,6 +527,22 @@ namespace bgfx
 #	endif // BX_PLATFORM_WINRT
 		}
 #endif // BX_PLATFORM_WINDOWS
+
+		if (SUCCEEDED(hr) )
+		{
+			IDXGIDevice1* dxgiDevice1;
+			_device->QueryInterface(IID_IDXGIDevice1, (void**)&dxgiDevice1);
+			if (NULL != dxgiDevice1)
+			{
+				hr = dxgiDevice1->SetMaximumFrameLatency(_scd.maxFrameLatency);
+				if (FAILED(hr) )
+				{
+					BX_TRACE("Failed to set maximum frame latency, hr 0x%08x", hr);
+					hr = S_OK;
+				}
+				DX_RELEASE_I(dxgiDevice1);
+			}
+		}
 
 		if (FAILED(hr) )
 		{
@@ -783,6 +801,11 @@ namespace bgfx
 			DX_RELEASE(device, 1);
 		}
 #endif // BX_PLATFORM_WINDOWS || BX_PLATFORM_WINRT
+	}
+
+	bool Dxgi::tearingSupported() const
+	{
+		return m_tearingSupported;
 	}
 
 } // namespace bgfx

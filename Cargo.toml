@@ -6,7 +6,7 @@ description = "low-level FFI bindings for bgfx"
 repository = "https://github.com/emoon/bgfx-sys"
 documentation = "https://docs.rs/bgfx-sys/0.5/bgfx-sys"
 name = "bgfx-sys"
-version = "0.7.0"
+version = "0.8.0"
 edition = "2018"
 build = "build.rs"
 

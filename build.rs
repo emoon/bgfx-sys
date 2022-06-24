@@ -37,7 +37,12 @@ fn main() {
     // Make it optional to enable bgfx debug setting
     #[cfg(feature = "bgfx-debug")]
     {
-        build.define("BGFX_CONFIG_DEBUG", "1");
+        build.define("BG_CONFIG_DEBUG", "1");
+    }
+
+    #[cfg(not(feature = "bgfx-debug"))]
+    {
+        build.define("BX_CONFIG_DEBUG", "0");
     }
 
     // Don't include decode of ASTC to reduce code size and is unlikely a common use-case.

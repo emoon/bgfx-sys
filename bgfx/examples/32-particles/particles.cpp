@@ -1,6 +1,6 @@
 /*
- * Copyright 2011-2021 Branimir Karadzic. All rights reserved.
- * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
+ * Copyright 2011-2022 Branimir Karadzic. All rights reserved.
+ * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
 #include "common.h"
@@ -417,7 +417,7 @@ public:
 
 			if (showBounds)
 			{
-				Aabb aabb;
+				bx::Aabb aabb;
 				psGetAabb(m_emitter[currentEmitter].m_handle, aabb);
 				dde.push();
 					dde.setWireframe(true);

@@ -1,6 +1,6 @@
 /*
  * Copyright 2019 Daniel Gavin. All rights reserved.
- * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
+ * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
  /*
@@ -17,7 +17,6 @@
 #include <bx/math.h>
 
 #include "bgfx_utils.h"
-#include "bounds.h"
 #include "camera.h"
 #include "common.h"
 #include "imgui/imgui.h"
@@ -642,7 +641,7 @@ namespace
 		* Load the Terrain Program
 		*
 		* This program renders an adaptive terrain using the implicit subdivision
-		* technique discribed in GPU Zen 2.
+		* technique described in GPU Zen 2.
 		**/
 		void loadPrograms()
 		{

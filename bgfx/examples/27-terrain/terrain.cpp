@@ -1,16 +1,15 @@
 /*
  * Copyright 2015 Andrew Mac. All rights reserved.
- * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
+ * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
+#include <bx/allocator.h>
+#include <bx/debug.h>
+#include <bx/math.h>
 #include "common.h"
 #include "bgfx_utils.h"
 #include "imgui/imgui.h"
 #include "camera.h"
-#include "bounds.h"
-#include <bx/allocator.h>
-#include <bx/debug.h>
-#include <bx/math.h>
 
 namespace
 {

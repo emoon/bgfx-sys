@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2021 Branimir Karadzic. All rights reserved.
+ * Copyright 2011-2022 Branimir Karadzic. All rights reserved.
  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
@@ -604,7 +604,7 @@ public static class bgfx
 		Text                   = 0x00000008,
 	
 		/// <summary>
-		/// Enable profiler.
+		/// Enable profiler. This causes per-view statistics to be collected, available through `bgfx::Stats::ViewStats`. This is unrelated to the profiler functions in `bgfx::CallbackI`.
 		/// </summary>
 		Profiler               = 0x00000010,
 	}
@@ -1270,6 +1270,11 @@ public static class bgfx
 		Amd                    = 0x1002,
 	
 		/// <summary>
+		/// Apple adapter.
+		/// </summary>
+		Apple                  = 0x106b,
+	
+		/// <summary>
 		/// Intel adapter.
 		/// </summary>
 		Intel                  = 0x8086,
@@ -1278,6 +1283,16 @@ public static class bgfx
 		/// nVidia adapter.
 		/// </summary>
 		Nvidia                 = 0x10de,
+	
+		/// <summary>
+		/// Microsoft adapter.
+		/// </summary>
+		Microsoft              = 0x1414,
+	
+		/// <summary>
+		/// ARM adapter.
+		/// </summary>
+		Arm                    = 0x13b5,
 	}
 	
 	[AllowDuplicates]
@@ -2480,7 +2495,7 @@ public static class bgfx
 	public static extern void init_ctor(Init* _init);
 	
 	/// <summary>
-	/// Initialize bgfx library.
+	/// Initialize the bgfx library.
 	/// </summary>
 	///
 	/// <param name="_init">Initialization parameters. See: `bgfx::Init` for more info.</param>
@@ -2497,13 +2512,13 @@ public static class bgfx
 	
 	/// <summary>
 	/// Reset graphic settings and back-buffer size.
-	/// @attention This call doesn't actually change window size, it just
-	///   resizes back-buffer. Windowing code has to change window size.
+	/// @attention This call doesn’t change the window size, it just resizes
+	///   the back-buffer. Your windowing code controls the window size.
 	/// </summary>
 	///
 	/// <param name="_width">Back-buffer width.</param>
 	/// <param name="_height">Back-buffer height.</param>
-	/// <param name="_flags">See: `BGFX_RESET_*` for more info.   - `BGFX_RESET_NONE` - No reset flags.   - `BGFX_RESET_FULLSCREEN` - Not supported yet.   - `BGFX_RESET_MSAA_X[2/4/8/16]` - Enable 2, 4, 8 or 16 x MSAA.   - `BGFX_RESET_VSYNC` - Enable V-Sync.   - `BGFX_RESET_MAXANISOTROPY` - Turn on/off max anisotropy.   - `BGFX_RESET_CAPTURE` - Begin screen capture.   - `BGFX_RESET_FLUSH_AFTER_RENDER` - Flush rendering after submitting to GPU.   - `BGFX_RESET_FLIP_AFTER_RENDER` - This flag  specifies where flip     occurs. Default behaviour is that flip occurs before rendering new     frame. This flag only has effect when `BGFX_CONFIG_MULTITHREADED=0`.   - `BGFX_RESET_SRGB_BACKBUFFER` - Enable sRGB backbuffer.</param>
+	/// <param name="_flags">See: `BGFX_RESET_*` for more info.   - `BGFX_RESET_NONE` - No reset flags.   - `BGFX_RESET_FULLSCREEN` - Not supported yet.   - `BGFX_RESET_MSAA_X[2/4/8/16]` - Enable 2, 4, 8 or 16 x MSAA.   - `BGFX_RESET_VSYNC` - Enable V-Sync.   - `BGFX_RESET_MAXANISOTROPY` - Turn on/off max anisotropy.   - `BGFX_RESET_CAPTURE` - Begin screen capture.   - `BGFX_RESET_FLUSH_AFTER_RENDER` - Flush rendering after submitting to GPU.   - `BGFX_RESET_FLIP_AFTER_RENDER` - This flag  specifies where flip     occurs. Default behaviour is that flip occurs before rendering new     frame. This flag only has effect when `BGFX_CONFIG_MULTITHREADED=0`.   - `BGFX_RESET_SRGB_BACKBUFFER` - Enable sRGB back-buffer.</param>
 	/// <param name="_format">Texture format. See: `TextureFormat::Enum`.</param>
 	///
 	[LinkName("bgfx_reset")]
@@ -2747,7 +2762,7 @@ public static class bgfx
 	public static extern DynamicIndexBufferHandle create_dynamic_index_buffer(uint32 _num, uint16 _flags);
 	
 	/// <summary>
-	/// Create dynamic index buffer and initialized it.
+	/// Create a dynamic index buffer and initialize it.
 	/// </summary>
 	///
 	/// <param name="_mem">Index buffer data.</param>
@@ -3056,7 +3071,7 @@ public static class bgfx
 	public static extern TextureHandle create_texture_2d(uint16 _width, uint16 _height, bool _hasMips, uint16 _numLayers, TextureFormat _format, uint64 _flags, Memory* _mem);
 	
 	/// <summary>
-	/// Create texture with size based on backbuffer ratio. Texture will maintain ratio
+	/// Create texture with size based on back-buffer ratio. Texture will maintain ratio
 	/// if back buffer resolution changes.
 	/// </summary>
 	///
@@ -3210,7 +3225,7 @@ public static class bgfx
 	public static extern FrameBufferHandle create_frame_buffer(uint16 _width, uint16 _height, TextureFormat _format, uint64 _textureFlags);
 	
 	/// <summary>
-	/// Create frame buffer with size based on backbuffer ratio. Frame buffer will maintain ratio
+	/// Create frame buffer with size based on back-buffer ratio. Frame buffer will maintain ratio
 	/// if back buffer resolution changes.
 	/// </summary>
 	///
@@ -3458,8 +3473,8 @@ public static class bgfx
 	
 	/// <summary>
 	/// Set view clear flags with different clear color for each
-	/// frame buffer texture. Must use `bgfx::setPaletteColor` to setup clear color
-	/// palette.
+	/// frame buffer texture. `bgfx::setPaletteColor` must be used to set up a
+	/// clear color palette.
 	/// </summary>
 	///
 	/// <param name="_id">View id.</param>
@@ -3503,8 +3518,8 @@ public static class bgfx
 	public static extern void set_view_frame_buffer(ViewId _id, FrameBufferHandle _handle);
 	
 	/// <summary>
-	/// Set view view and projection matrices, all draw primitives in this
-	/// view will use these matrices.
+	/// Set view's view matrix and projection matrix,
+	/// all draw primitives in this view will use these two matrices.
 	/// </summary>
 	///
 	/// <param name="_id">View id.</param>
@@ -3563,7 +3578,7 @@ public static class bgfx
 	/// <summary>
 	/// Set render states for draw primitive.
 	/// @remarks
-	///   1. To setup more complex states use:
+	///   1. To set up more complex states use:
 	///      `BGFX_STATE_ALPHA_REF(_ref)`,
 	///      `BGFX_STATE_POINT_SIZE(_size)`,
 	///      `BGFX_STATE_BLEND_FUNC(_src, _dst)`,
@@ -3648,7 +3663,7 @@ public static class bgfx
 	
 	/// <summary>
 	/// Reserve matrices in internal matrix cache.
-	/// @attention Pointer returned can be modifed until `bgfx::frame` is called.
+	/// @attention Pointer returned can be modified until `bgfx::frame` is called.
 	/// </summary>
 	///
 	/// <param name="_transform">Pointer to `Transform` structure.</param>
@@ -3767,7 +3782,7 @@ public static class bgfx
 	public static extern void encoder_set_transient_vertex_buffer_with_layout(Encoder* _this, uint8 _stream, TransientVertexBuffer* _tvb, uint32 _startVertex, uint32 _numVertices, VertexLayoutHandle _layoutHandle);
 	
 	/// <summary>
-	/// Set number of vertices for auto generated vertices use in conjuction
+	/// Set number of vertices for auto generated vertices use in conjunction
 	/// with gl_VertexID.
 	/// @attention Availability depends on: `BGFX_CAPS_VERTEX_ID`.
 	/// </summary>
@@ -3811,7 +3826,7 @@ public static class bgfx
 	public static extern void encoder_set_instance_data_from_dynamic_vertex_buffer(Encoder* _this, DynamicVertexBufferHandle _handle, uint32 _startVertex, uint32 _num);
 	
 	/// <summary>
-	/// Set number of instances for auto generated instances use in conjuction
+	/// Set number of instances for auto generated instances use in conjunction
 	/// with gl_InstanceID.
 	/// @attention Availability depends on: `BGFX_CAPS_VERTEX_ID`.
 	/// </summary>
@@ -4111,7 +4126,7 @@ public static class bgfx
 	/// <summary>
 	/// Set render states for draw primitive.
 	/// @remarks
-	///   1. To setup more complex states use:
+	///   1. To set up more complex states use:
 	///      `BGFX_STATE_ALPHA_REF(_ref)`,
 	///      `BGFX_STATE_POINT_SIZE(_size)`,
 	///      `BGFX_STATE_BLEND_FUNC(_src, _dst)`,
@@ -4196,7 +4211,7 @@ public static class bgfx
 	
 	/// <summary>
 	/// Reserve matrices in internal matrix cache.
-	/// @attention Pointer returned can be modifed until `bgfx::frame` is called.
+	/// @attention Pointer returned can be modified until `bgfx::frame` is called.
 	/// </summary>
 	///
 	/// <param name="_transform">Pointer to `Transform` structure.</param>
@@ -4325,7 +4340,7 @@ public static class bgfx
 	public static extern void set_transient_vertex_buffer_with_layout(uint8 _stream, TransientVertexBuffer* _tvb, uint32 _startVertex, uint32 _numVertices, VertexLayoutHandle _layoutHandle);
 	
 	/// <summary>
-	/// Set number of vertices for auto generated vertices use in conjuction
+	/// Set number of vertices for auto generated vertices use in conjunction
 	/// with gl_VertexID.
 	/// @attention Availability depends on: `BGFX_CAPS_VERTEX_ID`.
 	/// </summary>
@@ -4369,7 +4384,7 @@ public static class bgfx
 	public static extern void set_instance_data_from_dynamic_vertex_buffer(DynamicVertexBufferHandle _handle, uint32 _startVertex, uint32 _num);
 	
 	/// <summary>
-	/// Set number of instances for auto generated instances use in conjuction
+	/// Set number of instances for auto generated instances use in conjunction
 	/// with gl_InstanceID.
 	/// @attention Availability depends on: `BGFX_CAPS_VERTEX_ID`.
 	/// </summary>

@@ -1,6 +1,6 @@
 /*
- * Copyright 2011-2021 Branimir Karadzic. All rights reserved.
- * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
+ * Copyright 2011-2022 Branimir Karadzic. All rights reserved.
+ * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
 #include "entry_p.h"
@@ -536,7 +536,7 @@ namespace entry
 				bx::AllocatorI* allocator = getAllocator();
 				uint32_t size = (uint32_t)bx::getSize(reader);
 				void* data = BX_ALLOC(allocator, size + 1);
-				bx::read(reader, data, size);
+				bx::read(reader, data, size, bx::ErrorAssert{});
 				bx::close(reader);
 				((char*)data)[size] = '\0';
 
