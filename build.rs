@@ -108,6 +108,8 @@ fn main() {
     } else if env.contains("darwin") {
         build.file("bgfx/src/glcontext_nsgl.mm");
         build.file("bgfx/src/renderer_mtl.mm");
+    } else if env.contains("android") {
+        build.file("bgfx/src/glcontext_egl.cpp");
     } else {
         build.file("bgfx/src/glcontext_glx.cpp");
         build.cpp_link_stdlib("stdc++");
@@ -122,6 +124,11 @@ fn main() {
         println!("cargo:rustc-link-lib=framework=Metal");
         println!("cargo:rustc-link-lib=framework=MetalKit");
         println!("cargo:rustc-link-lib=c++");
+    } else if env.contains("android") {
+        println!("cargo:rustc-link-lib=c++_shared");
+        println!("cargo:rustc-link-lib=GLESv1_CM");
+        println!("cargo:rustc-link-lib=GLESv2");
+        println!("cargo:rustc-link-lib=EGL");
     } else {
         println!("cargo:rustc-link-lib=pthread");
         println!("cargo:rustc-link-lib=stdc++");
