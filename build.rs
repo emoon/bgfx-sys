@@ -38,7 +38,7 @@ fn main() {
     // Make it optional to enable bgfx debug setting
     #[cfg(feature = "bgfx-debug")]
     {
-        build.define("BG_CONFIG_DEBUG", "1");
+        build.define("BX_CONFIG_DEBUG", "1");
     }
 
     #[cfg(not(feature = "bgfx-debug"))]
