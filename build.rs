@@ -48,7 +48,17 @@ fn main() {
 
     // Don't include decode of ASTC to reduce code size and is unlikely a common use-case.
     build.define("BIMG_DECODE_ASTC", "0");
-    build.define("BGFX_CONFIG_MULTITHREADED", "0");
+
+    // Optionally disable multi-threading
+    #[cfg(feature = "bgfx-single-threaded")]
+    {
+        build.define("BGFX_CONFIG_MULTITHREADED", "0");
+    }
+
+    #[cfg(not(feature = "bgfx-single-threaded"))]
+    {
+        build.define("BGFX_CONFIG_MULTITHREADED", "1");
+    }
 
     if env.contains("windows") {
         build.define("BGFX_CONFIG_RENDERER_VULKAN", "1");
