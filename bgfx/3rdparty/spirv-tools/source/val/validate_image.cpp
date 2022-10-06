@@ -927,7 +927,7 @@ spv_result_t ValidateTypeSampledImage(ValidationState_t& _,
   return SPV_SUCCESS;
 }
 
-bool IsAllowedSampledImageOperand(SpvOp opcode) {
+bool IsAllowedSampledImageOperand(SpvOp opcode, ValidationState_t& _) {
   switch (opcode) {
     case SpvOpSampledImage:
     case SpvOpImageSampleImplicitLod:
@@ -950,6 +950,9 @@ bool IsAllowedSampledImageOperand(SpvOp opcode) {
     case SpvOpImageSparseDrefGather:
     case SpvOpCopyObject:
       return true;
+    case SpvOpStore:
+      if (_.HasCapability(SpvCapabilityBindlessTextureNV)) return true;
+      return false;
     default:
       return false;
   }
@@ -1017,11 +1020,11 @@ spv_result_t ValidateSampledImage(ValidationState_t& _,
                << "All OpSampledImage instructions must be in the same block "
                   "in "
                   "which their Result <id> are consumed. OpSampledImage Result "
-                  "Type <id> '"
+                  "Type <id> "
                << _.getIdName(inst->id())
-               << "' has a consumer in a different basic "
-                  "block. The consumer instruction <id> is '"
-               << _.getIdName(consumer_instr->id()) << "'.";
+               << " has a consumer in a different basic "
+                  "block. The consumer instruction <id> is "
+               << _.getIdName(consumer_instr->id()) << ".";
       }
 
       if (consumer_opcode == SpvOpPhi || consumer_opcode == SpvOpSelect) {
@@ -1030,21 +1033,21 @@ spv_result_t ValidateSampledImage(ValidationState_t& _,
                   "as "
                   "operands of Op"
                << spvOpcodeString(static_cast<SpvOp>(consumer_opcode)) << "."
-               << " Found result <id> '" << _.getIdName(inst->id())
-               << "' as an operand of <id> '"
-               << _.getIdName(consumer_instr->id()) << "'.";
+               << " Found result <id> " << _.getIdName(inst->id())
+               << " as an operand of <id> " << _.getIdName(consumer_instr->id())
+               << ".";
       }
 
-      if (!IsAllowedSampledImageOperand(consumer_opcode)) {
+      if (!IsAllowedSampledImageOperand(consumer_opcode, _)) {
         return _.diag(SPV_ERROR_INVALID_ID, inst)
                << "Result <id> from OpSampledImage instruction must not appear "
                   "as operand for Op"
                << spvOpcodeString(static_cast<SpvOp>(consumer_opcode))
                << ", since it is not specified as taking an "
                << "OpTypeSampledImage."
-               << " Found result <id> '" << _.getIdName(inst->id())
-               << "' as an operand of <id> '"
-               << _.getIdName(consumer_instr->id()) << "'.";
+               << " Found result <id> " << _.getIdName(inst->id())
+               << " as an operand of <id> " << _.getIdName(consumer_instr->id())
+               << ".";
       }
     }
   }
@@ -1686,22 +1689,13 @@ spv_result_t ValidateImageWrite(ValidationState_t& _, const Instruction* inst) {
            << " components, but given only " << actual_coord_size;
   }
 
-  // TODO(atgoo@github.com) The spec doesn't explicitly say what the type
-  // of texel should be.
+  // because it needs to match with 'Sampled Type' the Texel can't be a boolean
   const uint32_t texel_type = _.GetOperandTypeId(inst, 2);
   if (!_.IsIntScalarOrVectorType(texel_type) &&
       !_.IsFloatScalarOrVectorType(texel_type)) {
     return _.diag(SPV_ERROR_INVALID_DATA, inst)
            << "Expected Texel to be int or float vector or scalar";
   }
-
-#if 0
-  // TODO: See above.
-  if (_.GetDimension(texel_type) != 4) {
-    return _.diag(SPV_ERROR_INVALID_DATA, inst)
-        << "Expected Texel to have 4 components";
-  }
-#endif
 
   if (_.GetIdOpcode(info.sampled_type) != SpvOpTypeVoid) {
     const uint32_t texel_component_type = _.GetComponentType(texel_type);

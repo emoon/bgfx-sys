@@ -84,13 +84,7 @@ function toolchain(_buildDir, _libDir)
 		value = "toolset",
 		description = "Choose VS toolset",
 		allowed = {
-			{ "vs2012-clang",  "Clang 3.6"                       },
-			{ "vs2013-clang",  "Clang 3.6"                       },
-			{ "vs2015-clang",  "Clang 3.9"                       },
 			{ "vs2017-clang",  "Clang with MS CodeGen"           },
-			{ "vs2012-xp",     "Visual Studio 2012 targeting XP" },
-			{ "vs2013-xp",     "Visual Studio 2013 targeting XP" },
-			{ "vs2015-xp",     "Visual Studio 2015 targeting XP" },
 			{ "vs2017-xp",     "Visual Studio 2017 targeting XP" },
 			{ "winstore100",   "Universal Windows App 10.0"      },
 			{ "durango",       "Durango"                         },
@@ -185,9 +179,11 @@ function toolchain(_buildDir, _libDir)
 		tvosPlatform = _OPTIONS["with-tvos"]
 	end
 
-	local windowsPlatform = string.gsub(os.getenv("WindowsSDKVersion") or "8.1", "\\", "")
+	local windowsPlatform = nil
 	if _OPTIONS["with-windows"] then
 		windowsPlatform = _OPTIONS["with-windows"]
+	elseif nil ~= os.getenv("WindowsSDKVersion") then
+		windowsPlatform = string.gsub(os.getenv("WindowsSDKVersion"), "\\", "")
 	end
 
 	local compiler32bit = false
@@ -402,23 +398,20 @@ function toolchain(_buildDir, _libDir)
 			location (path.join(_buildDir, "projects", _ACTION .. "-riscv"))
 
 		end
-	elseif _ACTION == "vs2012"
-		or _ACTION == "vs2013"
-		or _ACTION == "vs2015"
-		or _ACTION == "vs2017"
+	elseif _ACTION == "vs2017"
 		or _ACTION == "vs2019"
 		or _ACTION == "vs2022"
 		then
 
 		local action = premake.action.current()
-		action.vstudio.windowsTargetPlatformVersion    = windowsPlatform
-		action.vstudio.windowsTargetPlatformMinVersion = windowsPlatform
+		if nil ~= windowsPlatform then
+			action.vstudio.windowsTargetPlatformVersion    = windowsPlatform
+			action.vstudio.windowsTargetPlatformMinVersion = windowsPlatform
+		end
 
 		if (_ACTION .. "-clang") == _OPTIONS["vs"] then
 			if "vs2017-clang" == _OPTIONS["vs"] then
 				premake.vstudio.toolset = "v141_clang_c2"
-			elseif "vs2015-clang" == _OPTIONS["vs"] then
-				premake.vstudio.toolset = "LLVM-vs2014"
 			else
 				premake.vstudio.toolset = ("LLVM-" .. _ACTION)
 			end
@@ -448,22 +441,6 @@ function toolchain(_buildDir, _libDir)
 
 			platforms { "Orbis" }
 			location (path.join(_buildDir, "projects", _ACTION .. "-orbis"))
-
-		elseif ("vs2012-xp") == _OPTIONS["vs"] then
-			premake.vstudio.toolset = ("v110_xp")
-			location (path.join(_buildDir, "projects", _ACTION .. "-xp"))
-
-		elseif "vs2013-xp" == _OPTIONS["vs"] then
-			premake.vstudio.toolset = ("v120_xp")
-			location (path.join(_buildDir, "projects", _ACTION .. "-xp"))
-
-		elseif "vs2015-xp" == _OPTIONS["vs"] then
-			premake.vstudio.toolset = ("v140_xp")
-			location (path.join(_buildDir, "projects", _ACTION .. "-xp"))
-
-		elseif "vs2015-xp" == _OPTIONS["vs"] then
-			premake.vstudio.toolset = ("v141_xp")
-			location (path.join(_buildDir, "projects", _ACTION .. "-xp"))
 
 		end
 
@@ -534,9 +511,9 @@ function toolchain(_buildDir, _libDir)
 		}
 		targetsuffix "Release"
 
-	configuration { "qbs" }
-		flags {
-			"ExtraWarnings",
+	configuration { "*-clang" }
+		buildoptions {
+			"-Wno-tautological-constant-compare",
 		}
 
 	configuration { "vs*", "x32" }
@@ -565,9 +542,6 @@ function toolchain(_buildDir, _libDir)
 		linkoptions {
 			"/ignore:4221", -- LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
 		}
-
-	configuration { "vs2008" }
-		includedirs { path.join(bxDir, "include/compat/msvc/pre1600") }
 
 	configuration { "x32", "vs*" }
 		targetdir (path.join(_buildDir, "win32_" .. _ACTION, "bin"))
@@ -700,7 +674,8 @@ function toolchain(_buildDir, _libDir)
 		}
 		buildoptions { "-m64" }
 
-	configuration { "linux-clang" }
+	configuration { "linux-*" }
+		includedirs { path.join(bxDir, "include/compat/linux") }
 
 	configuration { "linux-gcc-6" }
 		buildoptions {
@@ -941,7 +916,7 @@ function toolchain(_buildDir, _libDir)
 		}
 
 		linkoptions {
-			"-s MAX_WEBGL_VERSION=2"
+			"-s MAX_WEBGL_VERSION=2",
 		}
 
 	configuration { "wasm2js" }
@@ -949,7 +924,7 @@ function toolchain(_buildDir, _libDir)
 		objdir (path.join(_buildDir, "wasm2js/obj"))
 		libdirs { path.join(_libDir, "lib/wasm2js") }
 		linkoptions {
-			"-s WASM=0"
+			"-s WASM=0",
 		}
 
 	configuration { "wasm" }

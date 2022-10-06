@@ -169,7 +169,7 @@ device or OpenGL context.
 
 For more info see: :doc:`bgfx`.
 
-.. note:: You can use ``--with-sdl`` when runnning GENie to enable SDL2 integration with examples:
+.. note:: You can use ``--with-sdl`` when running GENie to enable SDL2 integration with examples:
           ``genie --with-sdl vs2012``
 
 .. note:: ``--with-glfw`` is also available, but it's just simple stub to be used to test GLFW
@@ -280,7 +280,12 @@ Chronological order:
    `43-denoise <examples.html#denoise>`__,
    `44-sss <examples.html#sss>`__,
    and `45-bokeh <examples.html#bokeh>`__ example.
- - Richard Schubert (`@Hemofektik <https://github.com/Hemofektik/>`__) - `46-fsr <examples.html#fsr>`__ example.
+ - Richard Schubert (`@Hemofektik <https://github.com/Hemofektik>`__) - `46-fsr <examples.html#fsr>`__ example.
+ - Sandy Carter (`@bwrsandman <https://github.com/bwrsandman>`__) - `47-pixelformats
+   <examples.html#pixelformats>`__ example, and various fixes and improvements.
+ - Liam Twigger (`@SnapperTT <https://github.com/SnapperTT>`__) - `48-drawindirect <examples.html#drawindirect>`__ example.
+ - Preetish Kakkar (`@blackhole <https://github.com/preetishkakkar>`__) - `49-hextile <examples.html#49-hextile>`__ example.
+ - Biswapriyo Nath (`@Biswa96 <https://github.com/Biswa96>`__) - GitHub Actions CI.
 
 and `others <https://github.com/bkaradzic/bgfx/graphs/contributors>`__...
 
