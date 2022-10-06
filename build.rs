@@ -5,7 +5,7 @@ fn main() {
     // windows includes
     if env.contains("windows") {
         build.include("bx/include/compat/msvc");
-        build.include("bgfx/3rdparty/dxsdk/include");
+        build.include("bgfx/3rdparty/directx-headers/include");
         build.flag("/Zc:__cplusplus");
     } else if env.contains("darwin") {
         // macOS includes
