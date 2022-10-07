@@ -17,3 +17,8 @@ jobs:
         run: cargo build --verbose
       - name: Build BGFX Debug
         run: cargo build --verbose -F bgfx-debug
+      - name: Build BGFX Release
+        run: cargo build --release
+      - name: Build BGFX Release + examples
+        run: cargo build --release --example cubes --example helloworld
+
