@@ -21,4 +21,6 @@ jobs:
         run: cargo build --release
       - name: Build BGFX Release + examples
         run: cargo build --release --example cubes --example helloworld
+      - name: Build BGFX Debug + examples
+        run: cargo build --example cubes --example helloworld
 
