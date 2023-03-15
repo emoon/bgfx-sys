@@ -1,7 +1,8 @@
+//export EMCC_CFLAGS="-s USE_GLFW=3 -sUSE_WEBGL2 -sALLOW_MEMORY_GROWTH=1"
 fn main() {
     let mut build = cc::Build::new();
     let env = std::env::var("TARGET").unwrap();
-
+    
     // windows includes
     if env.contains("windows") {
         build.include("bx/include/compat/msvc");
@@ -11,7 +12,11 @@ fn main() {
         // macOS includes
         build.include("bx/include/compat/osx");
         build.flag("-std=c++14");
+    } else if env.contains("emscripten") {
+        build.flag("-std=c++14");
+    } else {
     }
+
 
     // add shared include dirs
     build.include("bgfx/3rdparty/khronos");
@@ -25,17 +30,20 @@ fn main() {
     build.include("bimg/3rdparty/astc-codec/include");
     build.include("bimg/3rdparty/tinyexr/deps/miniz");
 
-    // defines - Currently not supporting WebGPU, GNM and Vulkan
+    // defines - Currently not supporting WebGPU, GNM
     // OS support:
     // Windows - DX11
     // macOS - Metal
     // Posix - OpenGL
+    // Android - OpenGL/Vulkan
+    // Emscripten - OpenGLES
     // In the future it would be good to make this configurable instead
 
     build.define("BGFX_CONFIG_RENDERER_WEBGPU", "0");
     build.define("BGFX_CONFIG_RENDERER_GNM", "0");
 
     // Make it optional to enable bgfx debug setting
+    /*
     #[cfg(feature = "bgfx-debug")]
     {
         build.define("BX_CONFIG_DEBUG", "1");
@@ -45,19 +53,27 @@ fn main() {
     {
         build.define("BX_CONFIG_DEBUG", "0");
     }
+    */
+
+    build.define("BX_CONFIG_DEBUG", "1");
 
     // Don't include decode of ASTC to reduce code size and is unlikely a common use-case.
     build.define("BIMG_DECODE_ASTC", "0");
 
-    // Optionally disable multi-threading
-    #[cfg(feature = "bgfx-single-threaded")]
-    {
+    // Never use multi-threading in emscripten
+    if env.contains("emscripten") {
         build.define("BGFX_CONFIG_MULTITHREADED", "0");
-    }
+    } else {
+        // Optionally disable multi-threading
+        #[cfg(feature = "bgfx-single-threaded")]
+        {
+            build.define("BGFX_CONFIG_MULTITHREADED", "0");
+        }
 
-    #[cfg(not(feature = "bgfx-single-threaded"))]
-    {
-        build.define("BGFX_CONFIG_MULTITHREADED", "1");
+        #[cfg(not(feature = "bgfx-single-threaded"))]
+        {
+            build.define("BGFX_CONFIG_MULTITHREADED", "1");
+        }
     }
 
     if env.contains("windows") {
@@ -80,6 +96,10 @@ fn main() {
         build.define("BGFX_CONFIG_RENDERER_METAL", "1");
     } else if env.contains("android") {
         build.define("BGFX_CONFIG_RENDERER_VULKAN", "1");
+        build.define("BGFX_CONFIG_RENDERER_OPENGLES", "1");
+    } else if env.contains("emscripten") {
+        //build.define("BX_PLATFORM_EMSCRIPTEN", "1");
+        //build.define("BGFX_CONFIG_RENDERER_OPENGL", "1");
         build.define("BGFX_CONFIG_RENDERER_OPENGLES", "1");
     } else {
         build.define("BGFX_CONFIG_RENDERER_VULKAN", "1");
@@ -120,6 +140,8 @@ fn main() {
         build.file("bgfx/src/renderer_mtl.mm");
     } else if env.contains("android") {
         build.file("bgfx/src/glcontext_egl.cpp");
+    } else if env.contains("emscripten") {
+        build.file("bgfx/src/glcontext_html5.cpp");
     } else {
         build.file("bgfx/src/glcontext_glx.cpp");
         build.cpp_link_stdlib("stdc++");

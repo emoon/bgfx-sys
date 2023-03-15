@@ -31,6 +31,7 @@ maintenance = { status = "actively-developed" }
 glfw = "0.41"
 raw-window-handle = "0.3"
 glam = "0.15"
+emscripten_main_loop = "0.1"
 
 [build-dependencies]
 cc = { version = "1.0", features = ["parallel"] }
@@ -40,3 +41,9 @@ cc = { version = "1.0", features = ["parallel"] }
 [features]
 bgfx-debug = []
 bgfx-single-threaded = []
+
+[target.wasm32-unknown-emscripten]
+rustflags = [
+    "-C", "link-arg=-sUSE_GLFW=3",
+]
+
