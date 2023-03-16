@@ -2,7 +2,7 @@
 
 This is a "port" of the cubes example running in a browser. The following requirements are needed for the example to work:
 * Emscripten https://emscripten.org/docs/getting_started/downloads.html and the env setup correctly
-* Rust target wasm32-unknown-emscripten
+* Rust target wasm32-unknown-emscripten `rustup install wasm32-unknown-emscripten`
 
 ## To run
 
