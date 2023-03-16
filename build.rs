@@ -1,4 +1,3 @@
-//export EMCC_CFLAGS="-s USE_GLFW=3 -sUSE_WEBGL2 -sALLOW_MEMORY_GROWTH=1"
 fn main() {
     let mut build = cc::Build::new();
     let env = std::env::var("TARGET").unwrap();
@@ -16,7 +15,6 @@ fn main() {
         build.flag("-std=c++14");
     } else {
     }
-
 
     // add shared include dirs
     build.include("bgfx/3rdparty/khronos");
@@ -55,7 +53,7 @@ fn main() {
     }
     */
 
-    build.define("BX_CONFIG_DEBUG", "1");
+    build.define("BX_CONFIG_DEBUG", "0");
 
     // Don't include decode of ASTC to reduce code size and is unlikely a common use-case.
     build.define("BIMG_DECODE_ASTC", "0");
@@ -98,8 +96,7 @@ fn main() {
         build.define("BGFX_CONFIG_RENDERER_VULKAN", "1");
         build.define("BGFX_CONFIG_RENDERER_OPENGLES", "1");
     } else if env.contains("emscripten") {
-        //build.define("BX_PLATFORM_EMSCRIPTEN", "1");
-        //build.define("BGFX_CONFIG_RENDERER_OPENGL", "1");
+        build.define("BGFX_CONFIG_RENDERER_OPENGL", "0");
         build.define("BGFX_CONFIG_RENDERER_OPENGLES", "1");
     } else {
         build.define("BGFX_CONFIG_RENDERER_VULKAN", "1");
