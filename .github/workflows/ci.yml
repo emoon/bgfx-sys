@@ -30,8 +30,8 @@ jobs:
       - name: Get Emscripten
         uses: mymindstorm/setup-emsdk@v11
       - name: Install emscripten Rust tools 
-        run: rustup install wasm32-unknown-emscripten
+        run: rustup target add wasm32-unknown-emscripten
       - name: Build Web example 
-        run: cd web_example && cargo build --target=wasm32-unknown-emscripten 
+        run: cd web_example && cargo build --target=wasm32-unknown-emscripten
 
 
