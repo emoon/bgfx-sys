@@ -48,6 +48,14 @@ static CUBE_INDICES: [u16; 36] = [
     6, 3, 7,
 ];
 
+extern "C" {
+    fn emscripten_performance_now() -> f64;
+}
+
+fn get_time() -> f32 {
+    unsafe { emscripten_performance_now() as f32 * 1.0/1000.0 }
+}
+
 fn get_platform_data(_window: &Window) -> bgfx_platform_data_t {
     let pd = MaybeUninit::<bgfx_platform_data_t>::zeroed();
     let mut pd = unsafe { pd.assume_init() };
@@ -85,11 +93,11 @@ unsafe fn load_shader_program(vs: &str, ps: &str) -> std::io::Result<bgfx_progra
     Ok(program)
 }
 
+
 struct State {
     vbh: bgfx_vertex_buffer_handle_t,
     ibh: bgfx_index_buffer_handle_t,
     shader_program: bgfx_program_handle_t,
-    time: f32,
     glfw: glfw::Glfw,
 }
 
@@ -112,9 +120,7 @@ fn main_callback(state: &mut State) {
         bgfx_set_view_rect(0, 0, 0, WIDTH as _, HEIGHT as _);
         let aspect = WIDTH as f32 / HEIGHT as f32;
 
-        // This should really be a timer, but it seems broken under wasm/emscripten
-        let t = state.time;//.elapsed().as_secs_f32();
-        state.time += 1.0 / 60.0; 
+        let t = get_time();
 
         let persp = Mat4::perspective_lh(60.0 * (std::f32::consts::PI / 180.0), aspect, 0.1, 100.0);
         let view = Mat4::look_at_lh(eye, at, up);
@@ -237,7 +243,6 @@ fn main() -> std::io::Result<()> {
             vbh,
             ibh,
             shader_program,
-            time: 0.0,
             glfw,
         });
 
