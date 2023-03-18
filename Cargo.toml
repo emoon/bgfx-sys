@@ -6,11 +6,12 @@ description = "low-level FFI bindings for bgfx"
 repository = "https://github.com/emoon/bgfx-sys"
 documentation = "https://docs.rs/bgfx-sys/0.10/bgfx-sys"
 name = "bgfx-sys"
-version = "0.11.0"
+version = "0.12.0"
 edition = "2018"
 build = "build.rs"
 
 exclude = [
+    "web_example",
     "bgfx/bindings",
     "bgfx/examples",
     "bgfx/3rdparty/cgltf",
@@ -31,7 +32,6 @@ maintenance = { status = "actively-developed" }
 glfw = "0.41"
 raw-window-handle = "0.3"
 glam = "0.15"
-emscripten_main_loop = "0.1"
 
 [build-dependencies]
 cc = { version = "1.0", features = ["parallel"] }
