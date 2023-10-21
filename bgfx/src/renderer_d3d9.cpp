@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2022 Branimir Karadzic. All rights reserved.
+ * Copyright 2011-2023 Branimir Karadzic. All rights reserved.
  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
@@ -183,12 +183,20 @@ namespace bgfx { namespace d3d9
 		{ D3DFMT_UNKNOWN       }, // ATC,
 		{ D3DFMT_UNKNOWN       }, // ATCE,
 		{ D3DFMT_UNKNOWN       }, // ATCI,
-		{ D3DFMT_UNKNOWN       }, // ASTC4x4,
-		{ D3DFMT_UNKNOWN       }, // ASTC5x5,
-		{ D3DFMT_UNKNOWN       }, // ASTC6x6,
-		{ D3DFMT_UNKNOWN       }, // ASTC8x5,
-		{ D3DFMT_UNKNOWN       }, // ASTC8x6,
-		{ D3DFMT_UNKNOWN       }, // ASTC10x5,
+		{ D3DFMT_UNKNOWN       }, // ASTC4x4
+		{ D3DFMT_UNKNOWN       }, // ASTC5x4
+		{ D3DFMT_UNKNOWN       }, // ASTC5x5
+		{ D3DFMT_UNKNOWN       }, // ASTC6x5
+		{ D3DFMT_UNKNOWN       }, // ASTC6x6
+		{ D3DFMT_UNKNOWN       }, // ASTC8x5
+		{ D3DFMT_UNKNOWN       }, // ASTC8x6
+		{ D3DFMT_UNKNOWN       }, // ASTC8x8
+		{ D3DFMT_UNKNOWN       }, // ASTC10x5
+		{ D3DFMT_UNKNOWN       }, // ASTC10x6
+		{ D3DFMT_UNKNOWN       }, // ASTC10x8
+		{ D3DFMT_UNKNOWN       }, // ASTC10x10
+		{ D3DFMT_UNKNOWN       }, // ASTC12x10
+		{ D3DFMT_UNKNOWN       }, // ASTC12x12
 		{ D3DFMT_UNKNOWN       }, // Unknown
 		{ D3DFMT_A1            }, // R1
 		{ D3DFMT_A8            }, // A8
@@ -721,6 +729,7 @@ namespace bgfx { namespace d3d9
 				| ( (m_caps.DevCaps2 & D3DDEVCAPS2_CAN_STRETCHRECT_FROM_TEXTURES) ? BGFX_CAPS_TEXTURE_BLIT : 0)
 				| BGFX_CAPS_TEXTURE_READ_BACK
 				| (m_occlusionQuerySupport ? BGFX_CAPS_OCCLUSION_QUERY : 0)
+				| ((m_caps.MaxVertexIndex > UINT16_MAX) ? BGFX_CAPS_INDEX32 : 0)
 				);
 
 			m_caps.NumSimultaneousRTs = bx::uint32_min(m_caps.NumSimultaneousRTs, BGFX_CONFIG_MAX_FRAME_BUFFER_ATTACHMENTS);
@@ -1217,11 +1226,11 @@ namespace bgfx { namespace d3d9
 		{
 			if (NULL != m_uniforms[_handle.idx])
 			{
-				BX_FREE(g_allocator, m_uniforms[_handle.idx]);
+				bx::free(g_allocator, m_uniforms[_handle.idx]);
 			}
 
 			const uint32_t size = bx::alignUp(g_uniformTypeSize[_type]*_num, 16);
-			void* data = BX_ALLOC(g_allocator, size);
+			void* data = bx::alloc(g_allocator, size);
 			bx::memSet(data, 0, size);
 			m_uniforms[_handle.idx] = data;
 			m_uniformReg.add(_handle, _name);
@@ -1229,7 +1238,7 @@ namespace bgfx { namespace d3d9
 
 		void destroyUniform(UniformHandle _handle) override
 		{
-			BX_FREE(g_allocator, m_uniforms[_handle.idx]);
+			bx::free(g_allocator, m_uniforms[_handle.idx]);
 			m_uniforms[_handle.idx] = NULL;
 			m_uniformReg.remove(_handle);
 		}
@@ -1578,11 +1587,6 @@ namespace bgfx { namespace d3d9
 		{
 			if (NULL != m_swapChain)
 			{
-				if (NULL != m_deviceEx)
-				{
-					DX_CHECK(m_deviceEx->WaitForVBlank(0) );
-				}
-
 				for (uint32_t ii = 0, num = m_numWindows; ii < num; ++ii)
 				{
 					HRESULT hr = S_OK;
@@ -2277,7 +2281,7 @@ namespace bgfx { namespace d3d9
 		s_renderD3D9 = BX_NEW(g_allocator, RendererContextD3D9);
 		if (!s_renderD3D9->init(_init) )
 		{
-			BX_DELETE(g_allocator, s_renderD3D9);
+			bx::deleteObject(g_allocator, s_renderD3D9);
 			s_renderD3D9 = NULL;
 		}
 		return s_renderD3D9;
@@ -2286,7 +2290,7 @@ namespace bgfx { namespace d3d9
 	void rendererDestroy()
 	{
 		s_renderD3D9->shutdown();
-		BX_DELETE(g_allocator, s_renderD3D9);
+		bx::deleteObject(g_allocator, s_renderD3D9);
 		s_renderD3D9 = NULL;
 	}
 
@@ -2302,7 +2306,7 @@ namespace bgfx { namespace d3d9
 		{
 			usage |= D3DUSAGE_DYNAMIC;
 			pool = D3DPOOL_DEFAULT;
-			m_dynamic = (uint8_t*)BX_ALLOC(g_allocator, _size);
+			m_dynamic = (uint8_t*)bx::alloc(g_allocator, _size);
 		}
 
 		const D3DFORMAT format = 0 == (_flags & BGFX_BUFFER_INDEX32)
@@ -2365,7 +2369,7 @@ namespace bgfx { namespace d3d9
 		{
 			usage |= D3DUSAGE_DYNAMIC;
 			pool = D3DPOOL_DEFAULT;
-			m_dynamic = (uint8_t*)BX_ALLOC(g_allocator, _size);
+			m_dynamic = (uint8_t*)bx::alloc(g_allocator, _size);
 		}
 
 		DX_CHECK(s_renderD3D9->m_device->CreateVertexBuffer(m_size
@@ -3025,7 +3029,7 @@ namespace bgfx { namespace d3d9
 							{
 								uint32_t srcpitch = mipWidth*bpp/8;
 
-								uint8_t* temp = (uint8_t*)BX_ALLOC(g_allocator, srcpitch*mipHeight);
+								uint8_t* temp = (uint8_t*)bx::alloc(g_allocator, srcpitch*mipHeight);
 								bimg::imageDecodeToBgra8(
 									  g_allocator
 									, temp
@@ -3038,7 +3042,7 @@ namespace bgfx { namespace d3d9
 
 								bx::memCopy(bits, pitch, temp, srcpitch, pitch, height);
 
-								BX_FREE(g_allocator, temp);
+								bx::free(g_allocator, temp);
 							}
 							else
 							{
@@ -3107,7 +3111,7 @@ namespace bgfx { namespace d3d9
 
 		if (convert)
 		{
-			temp = (uint8_t*)BX_ALLOC(g_allocator, rectpitch*_rect.m_height);
+			temp = (uint8_t*)bx::alloc(g_allocator, rectpitch*_rect.m_height);
 			bimg::imageDecodeToBgra8(g_allocator, temp, data, _rect.m_width, _rect.m_height, srcpitch, bimg::TextureFormat::Enum(m_requestedFormat) );
 			data = temp;
 		}
@@ -3142,7 +3146,7 @@ namespace bgfx { namespace d3d9
 
 		if (NULL != temp)
 		{
-			BX_FREE(g_allocator, temp);
+			bx::free(g_allocator, temp);
 		}
 
 		if (0 == _mip)

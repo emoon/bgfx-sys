@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2022 Branimir Karadzic. All rights reserved.
+ * Copyright 2011-2023 Branimir Karadzic. All rights reserved.
  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
@@ -15,7 +15,7 @@
 #ifndef BGFX_DEFINES_H_HEADER_GUARD
 #define BGFX_DEFINES_H_HEADER_GUARD
 
-#define BGFX_API_VERSION (117)
+#define BGFX_API_VERSION (122)
 
 /**
  * Color RGB/alpha/depth write. When it's not specified write will be disabled.
@@ -490,8 +490,9 @@
 #define BGFX_CAPS_VERTEX_ATTRIB_HALF              (0x0000000002000000) //!< Vertex attribute half-float is supported.
 #define BGFX_CAPS_VERTEX_ATTRIB_UINT10            (0x0000000004000000) //!< Vertex attribute 10_10_10_2 is supported.
 #define BGFX_CAPS_VERTEX_ID                       (0x0000000008000000) //!< Rendering with VertexID only is supported.
-#define BGFX_CAPS_VIEWPORT_LAYER_ARRAY            (0x0000000010000000) //!< Viewport layer is available in vertex shader.
-#define BGFX_CAPS_DRAW_INDIRECT_COUNT             (0x0000000020000000) //!< Draw indirect with indirect count is supported.
+#define BGFX_CAPS_PRIMITIVE_ID                    (0x0000000010000000) //!< PrimitiveID is available in fragment shader.
+#define BGFX_CAPS_VIEWPORT_LAYER_ARRAY            (0x0000000020000000) //!< Viewport layer is available in vertex shader.
+#define BGFX_CAPS_DRAW_INDIRECT_COUNT             (0x0000000040000000) //!< Draw indirect with indirect count is supported.
 /// All texture compare modes are supported.
 #define BGFX_CAPS_TEXTURE_COMPARE_ALL (0 \
 	| BGFX_CAPS_TEXTURE_COMPARE_RESERVED \

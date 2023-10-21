@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Branimir Karadzic. All rights reserved.
+ * Copyright 2010-2023 Branimir Karadzic. All rights reserved.
  * License: https://github.com/bkaradzic/bx/blob/master/LICENSE
  */
 
@@ -336,7 +336,7 @@ namespace bx
 	}
 
 	template<>
-	inline BX_CONSTEXPR_FUNC uint32_t uint32_cntbits(uint64_t _val)
+	inline BX_CONSTEXPR_FUNC uint32_t uint32_cntbits(unsigned long long _val)
 	{
 #if BX_COMPILER_GCC || BX_COMPILER_CLANG
 		return __builtin_popcountll(_val);
@@ -344,10 +344,16 @@ namespace bx
 		const uint32_t lo = uint32_t(_val&UINT32_MAX);
 		const uint32_t hi = uint32_t(_val>>32);
 
-		const uint32_t total = uint32_cntbits(lo)
-							 + uint32_cntbits(hi);
-		return total;
+		return uint32_cntbits(lo)
+			+  uint32_cntbits(hi)
+			;
 #endif // BX_COMPILER_*
+	}
+
+	template<>
+	inline BX_CONSTEXPR_FUNC uint32_t uint32_cntbits(unsigned long _val)
+	{
+		return uint32_cntbits<unsigned long long>(_val);
 	}
 
 	template<> inline BX_CONSTEXPR_FUNC uint32_t uint32_cntbits(uint8_t  _val) { return uint32_cntbits<uint32_t>(_val); }
@@ -381,7 +387,7 @@ namespace bx
 	}
 
 	template<>
-	inline BX_CONSTEXPR_FUNC uint32_t uint32_cntlz(uint64_t _val)
+	inline BX_CONSTEXPR_FUNC uint32_t uint32_cntlz(unsigned long long _val)
 	{
 #if BX_COMPILER_GCC || BX_COMPILER_CLANG
 		return 0 == _val ? 64 : __builtin_clzll(_val);
@@ -391,6 +397,12 @@ namespace bx
 			 : uint32_cntlz(uint32_t(_val) ) + 32
 			 ;
 #endif // BX_COMPILER_*
+	}
+
+	template<>
+	inline BX_CONSTEXPR_FUNC uint32_t uint32_cntlz(unsigned long _val)
+	{
+		return uint32_cntlz<unsigned long long>(_val);
 	}
 
 	template<> inline BX_CONSTEXPR_FUNC uint32_t uint32_cntlz(uint8_t  _val) { return uint32_cntlz<uint32_t>(_val)-24; }
@@ -416,7 +428,7 @@ namespace bx
 	}
 
 	template<>
-	inline BX_CONSTEXPR_FUNC uint32_t uint32_cnttz(uint64_t _val)
+	inline BX_CONSTEXPR_FUNC uint32_t uint32_cnttz(unsigned long long _val)
 	{
 #if BX_COMPILER_GCC || BX_COMPILER_CLANG
 		return 0 == _val ? 64 : __builtin_ctzll(_val);
@@ -426,6 +438,12 @@ namespace bx
 			: uint32_cnttz(uint32_t(_val>>32) ) + 32
 			;
 #endif // BX_COMPILER_*
+	}
+
+	template<>
+	inline BX_CONSTEXPR_FUNC uint32_t uint32_cnttz(unsigned long _val)
+	{
+		return uint32_cnttz<unsigned long long>(_val);
 	}
 
 	template<> inline BX_CONSTEXPR_FUNC uint32_t uint32_cnttz(uint8_t  _val) { return bx::min(8u,  uint32_cnttz<uint32_t>(_val) ); }
@@ -760,15 +778,15 @@ namespace bx
 		ftou.flt = _a;
 
 		const uint32_t one                       = uint32_li(0x00000001);
-		const uint32_t f_s_mask                  = uint32_li(0x80000000);
-		const uint32_t f_e_mask                  = uint32_li(0x7f800000);
-		const uint32_t f_m_mask                  = uint32_li(0x007fffff);
+		const uint32_t f_s_mask                  = uint32_li(kFloatSignMask);
+		const uint32_t f_e_mask                  = uint32_li(kFloatExponentMask);
+		const uint32_t f_m_mask                  = uint32_li(kFloatMantissaMask);
 		const uint32_t f_m_hidden_bit            = uint32_li(0x00800000);
 		const uint32_t f_m_round_bit             = uint32_li(0x00001000);
 		const uint32_t f_snan_mask               = uint32_li(0x7fc00000);
 		const uint32_t f_e_pos                   = uint32_li(0x00000017);
 		const uint32_t h_e_pos                   = uint32_li(0x0000000a);
-		const uint32_t h_e_mask                  = uint32_li(0x00007c00);
+		const uint32_t h_e_mask                  = uint32_li(kHalfExponentMask);
 		const uint32_t h_snan_mask               = uint32_li(0x00007e00);
 		const uint32_t h_e_mask_value            = uint32_li(0x0000001f);
 		const uint32_t f_h_s_pos_offset          = uint32_li(0x00000010);
@@ -823,14 +841,14 @@ namespace bx
 
 	inline BX_CONST_FUNC float halfToFloat(uint16_t _a)
 	{
-		const uint32_t h_e_mask             = uint32_li(0x00007c00);
-		const uint32_t h_m_mask             = uint32_li(0x000003ff);
-		const uint32_t h_s_mask             = uint32_li(0x00008000);
+		const uint32_t h_e_mask             = uint32_li(kHalfExponentMask);
+		const uint32_t h_m_mask             = uint32_li(kHalfMantissaMask);
+		const uint32_t h_s_mask             = uint32_li(kHalfSignMask);
 		const uint32_t h_f_s_pos_offset     = uint32_li(0x00000010);
 		const uint32_t h_f_e_pos_offset     = uint32_li(0x0000000d);
 		const uint32_t h_f_bias_offset      = uint32_li(0x0001c000);
-		const uint32_t f_e_mask             = uint32_li(0x7f800000);
-		const uint32_t f_m_mask             = uint32_li(0x007fffff);
+		const uint32_t f_e_mask             = uint32_li(kFloatExponentMask);
+		const uint32_t f_m_mask             = uint32_li(kFloatMantissaMask);
 		const uint32_t h_f_e_denorm_bias    = uint32_li(0x0000007e);
 		const uint32_t h_f_m_denorm_sa_bias = uint32_li(0x00000008);
 		const uint32_t f_e_pos              = uint32_li(0x00000017);

@@ -25,7 +25,7 @@ fn main() {
     build.include("bimg/include");
     build.include("bimg/3rdparty");
     build.include("bimg/3rdparty/iqa/include");
-    build.include("bimg/3rdparty/astc-codec/include");
+    build.include("bimg/3rdparty/astc-encoder/include");
     build.include("bimg/3rdparty/tinyexr/deps/miniz");
 
     // defines - Currently not supporting WebGPU, GNM

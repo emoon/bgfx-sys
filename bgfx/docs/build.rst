@@ -28,17 +28,17 @@ Enter bgfx directory:
 
     cd bgfx
 
-Generate Visual Studio 2017 project files:
+Generate Visual Studio 2019 project files:
 
 ::
 
-    ..\bx\tools\bin\windows\genie --with-examples vs2017
+    ..\bx\tools\bin\windows\genie --with-examples vs2019
 
-Open bgfx solution in Visual Studio 2017:
+Open bgfx solution in Visual Studio 2019:
 
 ::
 
-    start .build\projects\vs2017\bgfx.sln
+    start .build\projects\vs2019\bgfx.sln
 
 .. note:: For more detailed prerequisites and build steps on other platforms see below.
 
@@ -48,7 +48,7 @@ Prerequisites
 Android
 ~~~~~~~
 
-Download AndroidNDK:
+Download Android NDK (r23 or newer):
 
  - https://developer.android.com/tools/sdk/ndk/index.html
 
@@ -57,14 +57,7 @@ Set following environment variables:
 ::
 
     setx ANDROID_NDK_ROOT <path to AndroidNDK directory>
-    setx ANDROID_NDK_ARM <path to AndroidNDK directory>\toolchains\arm-linux-androideabi-4.7\prebuilt\windows-x86_64
-    setx ANDROID_NDK_MIPS <path to AndroidNDK directory>\toolchains\mipsel-linux-android-4.7\prebuilt\windows-x86_64
-    setx ANDROID_NDK_X86 <path to AndroidNDK directory>\toolchains\x86-4.7\prebuilt\windows-x86_64
 
-
-To deploy on Android you can use bgfx android activity:
-
- - https://github.com/Nodrev/bgfx-android-activity#bgfx-android-activity---android-glue-for-bgfx
 
 Linux
 ~~~~~
@@ -90,7 +83,7 @@ Build
 -----
 
 bgfx uses `GENie - Project generator tool <https://github.com/bkaradzic/genie#genie---project-generator-tool>`__
-to generate project files for various platform. Binaries for Linux, OSX, and Windows are included in
+to generate project files for various platform. Binaries for Linux, macOS, and Windows are included in
 bx repository.
 
 General
@@ -118,17 +111,17 @@ Configuration is ``<platform>-<debug/release>[32/64]``. For example:
 Windows
 ~~~~~~~
 
-Visual Studio 2017 command line:
+Visual Studio 2019 command line:
 
 ::
 
-    make vs2017-release64
+    make vs2019-release64
 
-Visual Studio 2017 IDE:
+Visual Studio 2019 IDE:
 
 ::
 
-    start .build/projects/vs2017/bgfx.sln
+    start .build/projects/vs2019/bgfx.sln
 
 Xcode
 ~~~~~
@@ -169,7 +162,7 @@ WinRT / UWP
 
 ::
 
-    ..\bx\tools\bin\windows\genie --vs=winstore100 vs2017
+    ..\bx\tools\bin\windows\genie --vs=winstore100 vs2019
 
 Build the resulting solution and deploy to device.
 
@@ -181,7 +174,7 @@ Amalgamated Build
 For ease of integration to other build system bgfx library can be built
 with single .cpp file. It's only necessary to build
 `src/amalgamated.cpp <https://github.com/bkaradzic/bgfx/blob/master/src/amalgamated.cpp>`__
-(for OSX/iOS use
+(for macOS/iOS/iPadOS/tvOS use
 `src/amalgamated.mm <https://github.com/bkaradzic/bgfx/blob/master/src/amalgamated.mm>`__
 instead) inside different build system.
 
@@ -192,7 +185,7 @@ To build bgfx project files for tools, use ``--with-tools`` option:
 
 ::
 
-    ..\bx\tools\bin\windows\genie --with-tools vs2017
+    ..\bx\tools\bin\windows\genie --with-tools vs2019
 
 
 Alternative build systems
