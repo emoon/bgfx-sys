@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2022 Branimir Karadzic. All rights reserved.
+ * Copyright 2011-2023 Branimir Karadzic. All rights reserved.
  * License: https://github.com/bkaradzic/bimg/blob/master/LICENSE
  */
 
@@ -67,6 +67,7 @@ BX_PRAGMA_DIAGNOSTIC_IGNORED_GCC("-Wimplicit-fallthrough");
 #define STBI_REALLOC(_ptr, _size) lodepng_realloc(_ptr, _size)
 #define STBI_FREE(_ptr)           lodepng_free(_ptr)
 #define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_STATIC
 #include <stb/stb_image.h>
 BX_PRAGMA_DIAGNOSTIC_POP();
 
@@ -519,7 +520,7 @@ namespace bimg
 						stepA  = 1;
 					}
 
-					data   = (uint8_t*)BX_ALLOC(_allocator, exrImage.width * exrImage.height * dstBpp/8);
+					data   = (uint8_t*)bx::alloc(_allocator, exrImage.width * exrImage.height * dstBpp/8);
 					width  = exrImage.width;
 					height = exrImage.height;
 
@@ -627,7 +628,7 @@ namespace bimg
 				, false
 				, data
 				);
-			BX_FREE(_allocator, data);
+			bx::free(_allocator, data);
 			output->m_hasAlpha = hasAlpha;
 		}
 

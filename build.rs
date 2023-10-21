@@ -1,7 +1,7 @@
 fn main() {
     let mut build = cc::Build::new();
     let env = std::env::var("TARGET").unwrap();
-    
+
     // windows includes
     if env.contains("windows") {
         build.include("bx/include/compat/msvc");
@@ -25,7 +25,7 @@ fn main() {
     build.include("bimg/include");
     build.include("bimg/3rdparty");
     build.include("bimg/3rdparty/iqa/include");
-    build.include("bimg/3rdparty/astc-codec/include");
+    build.include("bimg/3rdparty/astc-encoder/include");
     build.include("bimg/3rdparty/tinyexr/deps/miniz");
 
     // defines - Currently not supporting WebGPU, GNM
@@ -133,14 +133,13 @@ fn main() {
         build.file("bgfx/src/shader_dx9bc.cpp");
         build.file("bgfx/src/shader_spirv.cpp");
     } else if env.contains("darwin") {
-        build.file("bgfx/src/glcontext_nsgl.mm");
         build.file("bgfx/src/renderer_mtl.mm");
     } else if env.contains("android") {
         build.file("bgfx/src/glcontext_egl.cpp");
     } else if env.contains("emscripten") {
         build.file("bgfx/src/glcontext_html5.cpp");
     } else {
-        build.file("bgfx/src/glcontext_glx.cpp");
+        build.file("bgfx/src/glcontext_egl.cpp");
         build.cpp_link_stdlib("stdc++");
     }
 

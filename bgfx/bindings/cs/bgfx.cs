@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2022 Branimir Karadzic. All rights reserved.
+ * Copyright 2011-2023 Branimir Karadzic. All rights reserved.
  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
@@ -1147,14 +1147,19 @@ public static partial class bgfx
 		VertexId               = 0x0000000008000000,
 	
 		/// <summary>
+		/// PrimitiveID is available in fragment shader.
+		/// </summary>
+		PrimitiveId            = 0x0000000010000000,
+	
+		/// <summary>
 		/// Viewport layer is available in vertex shader.
 		/// </summary>
-		ViewportLayerArray     = 0x0000000010000000,
+		ViewportLayerArray     = 0x0000000020000000,
 	
 		/// <summary>
 		/// Draw indirect with indirect count is supported.
 		/// </summary>
-		DrawIndirectCount      = 0x0000000020000000,
+		DrawIndirectCount      = 0x0000000040000000,
 	
 		/// <summary>
 		/// All texture compare modes are supported.
@@ -1672,9 +1677,19 @@ public static partial class bgfx
 		ASTC4x4,
 	
 		/// <summary>
+		/// ASTC 5x4 6.40 BPP
+		/// </summary>
+		ASTC5x4,
+	
+		/// <summary>
 		/// ASTC 5x5 5.12 BPP
 		/// </summary>
 		ASTC5x5,
+	
+		/// <summary>
+		/// ASTC 6x5 4.27 BPP
+		/// </summary>
+		ASTC6x5,
 	
 		/// <summary>
 		/// ASTC 6x6 3.56 BPP
@@ -1692,9 +1707,39 @@ public static partial class bgfx
 		ASTC8x6,
 	
 		/// <summary>
+		/// ASTC 8x8 2.00 BPP
+		/// </summary>
+		ASTC8x8,
+	
+		/// <summary>
 		/// ASTC 10x5 2.56 BPP
 		/// </summary>
 		ASTC10x5,
+	
+		/// <summary>
+		/// ASTC 10x6 2.13 BPP
+		/// </summary>
+		ASTC10x6,
+	
+		/// <summary>
+		/// ASTC 10x8 1.60 BPP
+		/// </summary>
+		ASTC10x8,
+	
+		/// <summary>
+		/// ASTC 10x10 1.28 BPP
+		/// </summary>
+		ASTC10x10,
+	
+		/// <summary>
+		/// ASTC 12x10 1.07 BPP
+		/// </summary>
+		ASTC12x10,
+	
+		/// <summary>
+		/// ASTC 12x12 0.89 BPP
+		/// </summary>
+		ASTC12x12,
 	
 		/// <summary>
 		/// Compressed formats above.
@@ -1957,6 +2002,21 @@ public static partial class bgfx
 		Count
 	}
 	
+	public enum NativeWindowHandleType
+	{
+		/// <summary>
+		/// Platform default handle type (X11 on Linux).
+		/// </summary>
+		Default,
+	
+		/// <summary>
+		/// Wayland.
+		/// </summary>
+		Wayland,
+	
+		Count
+	}
+	
 	public enum RenderFrame
 	{
 		/// <summary>
@@ -2027,7 +2087,7 @@ public static partial class bgfx
 		public byte numGPUs;
 		public fixed uint gpu[4];
 		public Limits limits;
-		public fixed ushort formats[88];
+		public fixed ushort formats[96];
 	}
 	
 	public unsafe struct InternalData
@@ -2043,6 +2103,7 @@ public static partial class bgfx
 		public void* context;
 		public void* backBuffer;
 		public void* backBufferDS;
+		public NativeWindowHandleType type;
 	}
 	
 	public unsafe struct Resolution
@@ -2053,6 +2114,7 @@ public static partial class bgfx
 		public uint reset;
 		public byte numBackBuffers;
 		public byte maxFrameLatency;
+		public byte debugTextScale;
 	}
 	
 	public unsafe struct Init
@@ -3786,7 +3848,7 @@ public static partial class bgfx
 	///
 	/// <param name="_handle">Vertex buffer.</param>
 	/// <param name="_startVertex">First instance data.</param>
-	/// <param name="_num">Number of data instances. Set instance data buffer for draw primitive.</param>
+	/// <param name="_num">Number of data instances.</param>
 	///
 	[DllImport(DllName, EntryPoint="bgfx_encoder_set_instance_data_from_vertex_buffer", CallingConvention = CallingConvention.Cdecl)]
 	public static extern unsafe void encoder_set_instance_data_from_vertex_buffer(Encoder* _this, VertexBufferHandle _handle, uint _startVertex, uint _num);
@@ -4364,7 +4426,7 @@ public static partial class bgfx
 	///
 	/// <param name="_handle">Vertex buffer.</param>
 	/// <param name="_startVertex">First instance data.</param>
-	/// <param name="_num">Number of data instances. Set instance data buffer for draw primitive.</param>
+	/// <param name="_num">Number of data instances.</param>
 	///
 	[DllImport(DllName, EntryPoint="bgfx_set_instance_data_from_vertex_buffer", CallingConvention = CallingConvention.Cdecl)]
 	public static extern unsafe void set_instance_data_from_vertex_buffer(VertexBufferHandle _handle, uint _startVertex, uint _num);

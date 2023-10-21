@@ -1,4 +1,4 @@
-// Copyright 2011-2022 Branimir Karadzic. All rights reserved.
+// Copyright 2011-2023 Branimir Karadzic. All rights reserved.
 // License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
 
 
@@ -708,11 +708,14 @@ pub const CapsFlags_VertexAttribUint10: CapsFlags     = 0x0000000004000000;
 /// Rendering with VertexID only is supported.
 pub const CapsFlags_VertexId: CapsFlags               = 0x0000000008000000;
 
+/// PrimitiveID is available in fragment shader.
+pub const CapsFlags_PrimitiveId: CapsFlags            = 0x0000000010000000;
+
 /// Viewport layer is available in vertex shader.
-pub const CapsFlags_ViewportLayerArray: CapsFlags     = 0x0000000010000000;
+pub const CapsFlags_ViewportLayerArray: CapsFlags     = 0x0000000020000000;
 
 /// Draw indirect with indirect count is supported.
-pub const CapsFlags_DrawIndirectCount: CapsFlags      = 0x0000000020000000;
+pub const CapsFlags_DrawIndirectCount: CapsFlags      = 0x0000000040000000;
 
 /// All texture compare modes are supported.
 pub const CapsFlags_TextureCompareAll: CapsFlags      = 0x0000000000300000;
@@ -1024,8 +1027,14 @@ pub const TextureFormat = enum(c_int) {
     /// ASTC 4x4 8.0 BPP
     ASTC4x4,
 
+    /// ASTC 5x4 6.40 BPP
+    ASTC5x4,
+
     /// ASTC 5x5 5.12 BPP
     ASTC5x5,
+
+    /// ASTC 6x5 4.27 BPP
+    ASTC6x5,
 
     /// ASTC 6x6 3.56 BPP
     ASTC6x6,
@@ -1036,8 +1045,26 @@ pub const TextureFormat = enum(c_int) {
     /// ASTC 8x6 2.67 BPP
     ASTC8x6,
 
+    /// ASTC 8x8 2.00 BPP
+    ASTC8x8,
+
     /// ASTC 10x5 2.56 BPP
     ASTC10x5,
+
+    /// ASTC 10x6 2.13 BPP
+    ASTC10x6,
+
+    /// ASTC 10x8 1.60 BPP
+    ASTC10x8,
+
+    /// ASTC 10x10 1.28 BPP
+    ASTC10x10,
+
+    /// ASTC 12x10 1.07 BPP
+    ASTC12x10,
+
+    /// ASTC 12x12 0.89 BPP
+    ASTC12x12,
 
     /// Compressed formats above.
     Unknown,
@@ -1233,6 +1260,16 @@ pub const ViewMode = enum(c_int) {
     Count
 };
 
+pub const NativeWindowHandleType = enum(c_int) {
+    /// Platform default handle type (X11 on Linux).
+    Default,
+
+    /// Wayland.
+    Wayland,
+
+    Count
+};
+
 pub const RenderFrame = enum(c_int) {
     /// Renderer context is not created yet.
     NoContext,
@@ -1291,7 +1328,7 @@ pub const Caps = extern struct {
         numGPUs: u8,
         gpu: [4]GPU,
         limits: Limits,
-        formats: [88]u16,
+        formats: [96]u16,
     };
 
     pub const InternalData = extern struct {
@@ -1305,6 +1342,7 @@ pub const Caps = extern struct {
         context: ?*anyopaque,
         backBuffer: ?*anyopaque,
         backBufferDS: ?*anyopaque,
+        type: NativeWindowHandleType,
     };
 
     pub const Resolution = extern struct {
@@ -1314,6 +1352,7 @@ pub const Caps = extern struct {
         reset: u32,
         numBackBuffers: u8,
         maxFrameLatency: u8,
+        debugTextScale: u8,
     };
 
 pub const Init = extern struct {
@@ -1675,7 +1714,7 @@ pub const Init = extern struct {
         /// Set instance data buffer for draw primitive.
         /// <param name="_handle">Vertex buffer.</param>
         /// <param name="_startVertex">First instance data.</param>
-        /// <param name="_num">Number of data instances. Set instance data buffer for draw primitive.</param>
+        /// <param name="_num">Number of data instances.</param>
         pub inline fn setInstanceDataFromVertexBuffer(self: ?*Encoder, _handle: VertexBufferHandle, _startVertex: u32, _num: u32) void {
             return bgfx_encoder_set_instance_data_from_vertex_buffer(self, _handle, _startVertex, _num);
         }
@@ -3042,7 +3081,7 @@ extern fn bgfx_encoder_set_instance_data_buffer(self: ?*Encoder, _idb: [*c]const
 /// Set instance data buffer for draw primitive.
 /// <param name="_handle">Vertex buffer.</param>
 /// <param name="_startVertex">First instance data.</param>
-/// <param name="_num">Number of data instances. Set instance data buffer for draw primitive.</param>
+/// <param name="_num">Number of data instances.</param>
 extern fn bgfx_encoder_set_instance_data_from_vertex_buffer(self: ?*Encoder, _handle: VertexBufferHandle, _startVertex: u32, _num: u32) void;
 
 /// Set instance data buffer for draw primitive.
@@ -3473,7 +3512,7 @@ extern fn bgfx_set_instance_data_buffer(_idb: [*c]const InstanceDataBuffer, _sta
 /// Set instance data buffer for draw primitive.
 /// <param name="_handle">Vertex buffer.</param>
 /// <param name="_startVertex">First instance data.</param>
-/// <param name="_num">Number of data instances. Set instance data buffer for draw primitive.</param>
+/// <param name="_num">Number of data instances.</param>
 pub inline fn setInstanceDataFromVertexBuffer(_handle: VertexBufferHandle, _startVertex: u32, _num: u32) void {
     return bgfx_set_instance_data_from_vertex_buffer(_handle, _startVertex, _num);
 }

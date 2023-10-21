@@ -1,5 +1,5 @@
 /*
- * Copyright 2011-2022 Branimir Karadzic. All rights reserved.
+ * Copyright 2011-2023 Branimir Karadzic. All rights reserved.
  * License: https://github.com/bkaradzic/bgfx/blob/master/LICENSE
  */
 
@@ -1148,14 +1148,19 @@ public static class bgfx
 		VertexId               = 0x0000000008000000,
 	
 		/// <summary>
+		/// PrimitiveID is available in fragment shader.
+		/// </summary>
+		PrimitiveId            = 0x0000000010000000,
+	
+		/// <summary>
 		/// Viewport layer is available in vertex shader.
 		/// </summary>
-		ViewportLayerArray     = 0x0000000010000000,
+		ViewportLayerArray     = 0x0000000020000000,
 	
 		/// <summary>
 		/// Draw indirect with indirect count is supported.
 		/// </summary>
-		DrawIndirectCount      = 0x0000000020000000,
+		DrawIndirectCount      = 0x0000000040000000,
 	
 		/// <summary>
 		/// All texture compare modes are supported.
@@ -1679,9 +1684,19 @@ public static class bgfx
 		ASTC4x4,
 	
 		/// <summary>
+		/// ASTC 5x4 6.40 BPP
+		/// </summary>
+		ASTC5x4,
+	
+		/// <summary>
 		/// ASTC 5x5 5.12 BPP
 		/// </summary>
 		ASTC5x5,
+	
+		/// <summary>
+		/// ASTC 6x5 4.27 BPP
+		/// </summary>
+		ASTC6x5,
 	
 		/// <summary>
 		/// ASTC 6x6 3.56 BPP
@@ -1699,9 +1714,39 @@ public static class bgfx
 		ASTC8x6,
 	
 		/// <summary>
+		/// ASTC 8x8 2.00 BPP
+		/// </summary>
+		ASTC8x8,
+	
+		/// <summary>
 		/// ASTC 10x5 2.56 BPP
 		/// </summary>
 		ASTC10x5,
+	
+		/// <summary>
+		/// ASTC 10x6 2.13 BPP
+		/// </summary>
+		ASTC10x6,
+	
+		/// <summary>
+		/// ASTC 10x8 1.60 BPP
+		/// </summary>
+		ASTC10x8,
+	
+		/// <summary>
+		/// ASTC 10x10 1.28 BPP
+		/// </summary>
+		ASTC10x10,
+	
+		/// <summary>
+		/// ASTC 12x10 1.07 BPP
+		/// </summary>
+		ASTC12x10,
+	
+		/// <summary>
+		/// ASTC 12x12 0.89 BPP
+		/// </summary>
+		ASTC12x12,
 	
 		/// <summary>
 		/// Compressed formats above.
@@ -1972,6 +2017,22 @@ public static class bgfx
 	}
 	
 	[AllowDuplicates]
+	public enum NativeWindowHandleType : uint32
+	{
+		/// <summary>
+		/// Platform default handle type (X11 on Linux).
+		/// </summary>
+		Default,
+	
+		/// <summary>
+		/// Wayland.
+		/// </summary>
+		Wayland,
+	
+		Count
+	}
+	
+	[AllowDuplicates]
 	public enum RenderFrame : uint32
 	{
 		/// <summary>
@@ -2045,7 +2106,7 @@ public static class bgfx
 		public uint8 numGPUs;
 		public GPU[4] gpu;
 		public Limits limits;
-		public uint16[88] formats;
+		public uint16[96] formats;
 	}
 	
 	[CRepr]
@@ -2063,6 +2124,7 @@ public static class bgfx
 		public void* context;
 		public void* backBuffer;
 		public void* backBufferDS;
+		public NativeWindowHandleType type;
 	}
 	
 	[CRepr]
@@ -2074,6 +2136,7 @@ public static class bgfx
 		public uint32 reset;
 		public uint8 numBackBuffers;
 		public uint8 maxFrameLatency;
+		public uint8 debugTextScale;
 	}
 	
 	[CRepr]
@@ -3829,7 +3892,7 @@ public static class bgfx
 	///
 	/// <param name="_handle">Vertex buffer.</param>
 	/// <param name="_startVertex">First instance data.</param>
-	/// <param name="_num">Number of data instances. Set instance data buffer for draw primitive.</param>
+	/// <param name="_num">Number of data instances.</param>
 	///
 	[LinkName("bgfx_encoder_set_instance_data_from_vertex_buffer")]
 	public static extern void encoder_set_instance_data_from_vertex_buffer(Encoder* _this, VertexBufferHandle _handle, uint32 _startVertex, uint32 _num);
@@ -4407,7 +4470,7 @@ public static class bgfx
 	///
 	/// <param name="_handle">Vertex buffer.</param>
 	/// <param name="_startVertex">First instance data.</param>
-	/// <param name="_num">Number of data instances. Set instance data buffer for draw primitive.</param>
+	/// <param name="_num">Number of data instances.</param>
 	///
 	[LinkName("bgfx_set_instance_data_from_vertex_buffer")]
 	public static extern void set_instance_data_from_vertex_buffer(VertexBufferHandle _handle, uint32 _startVertex, uint32 _num);
