@@ -4918,6 +4918,7 @@ namespace bimg
 		case TextureFormat::ASTC10x10:
 		case TextureFormat::ASTC12x10:
 		case TextureFormat::ASTC12x12:
+			/*
 			if (BX_ENABLED(BIMG_DECODE_ASTC) )
 			{
 					const bimg::ImageBlockInfo& astcBlockInfo = bimg::getBlockInfo(_srcFormat);
@@ -4990,6 +4991,7 @@ namespace bimg
 					astcenc_context_free(context);
 			}
 			else
+			*/
 			{
 				BX_WARN(false, "ASTC decoder is disabled (BIMG_DECODE_ASTC).");
 				imageCheckerboard(_dst, _width, _height, 16, UINT32_C(0xff000000), UINT32_C(0xff00ff00) );
