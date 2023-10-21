@@ -140,7 +140,7 @@ fn main() {
     } else if env.contains("emscripten") {
         build.file("bgfx/src/glcontext_html5.cpp");
     } else {
-        build.file("bgfx/src/glcontext_glx.cpp");
+        build.file("bgfx/src/glcontext_egl.cpp");
         build.cpp_link_stdlib("stdc++");
     }
 
