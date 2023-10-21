@@ -133,7 +133,6 @@ fn main() {
         build.file("bgfx/src/shader_dx9bc.cpp");
         build.file("bgfx/src/shader_spirv.cpp");
     } else if env.contains("darwin") {
-        build.file("bgfx/src/glcontext_nsgl.mm");
         build.file("bgfx/src/renderer_mtl.mm");
     } else if env.contains("android") {
         build.file("bgfx/src/glcontext_egl.cpp");
