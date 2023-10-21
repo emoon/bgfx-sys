@@ -39,7 +39,6 @@ unsafe fn update_platform_handle(pd: &mut bgfx_platform_data_t, window: &Window)
     }
 }
 
-
 #[cfg(target_os = "linux")]
 fn get_render_type() -> u32 {
     BGFX_RENDERER_TYPE_OPENGL
@@ -87,7 +86,13 @@ fn main() {
         }
 
         bgfx_set_debug(BGFX_DEBUG_TEXT);
-        bgfx_set_view_clear(0, (BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH) as _, 0x103030ff, 1.0, 0);
+        bgfx_set_view_clear(
+            0,
+            (BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH) as _,
+            0x103030ff,
+            1.0,
+            0,
+        );
     }
 
     let mut old_size = (0, 0);

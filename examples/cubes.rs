@@ -170,7 +170,13 @@ fn main() -> std::io::Result<()> {
         }
 
         bgfx_set_debug(BGFX_DEBUG_TEXT);
-        bgfx_set_view_clear(0, (BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH) as _, 0x103030ff, 1.0, 0);
+        bgfx_set_view_clear(
+            0,
+            (BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH) as _,
+            0x103030ff,
+            1.0,
+            0,
+        );
 
         // Setup vertex layout
 
@@ -207,7 +213,8 @@ fn main() -> std::io::Result<()> {
             (std::mem::size_of::<u16>() * 36) as _,
         );
 
-        let vbh = bgfx_create_vertex_buffer(vertices_mem, &mut vertex_layout, BGFX_BUFFER_NONE as _);
+        let vbh =
+            bgfx_create_vertex_buffer(vertices_mem, &mut vertex_layout, BGFX_BUFFER_NONE as _);
         let ibh = bgfx_create_index_buffer(index_mem, BGFX_BUFFER_NONE as _);
 
         // create the shaders

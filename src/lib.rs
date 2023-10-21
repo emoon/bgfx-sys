@@ -3,4 +3,3 @@
 #![allow(non_snake_case)]
 
 include!("./ffi.rs");
-

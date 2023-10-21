@@ -1,7 +1,7 @@
 fn main() {
     let mut build = cc::Build::new();
     let env = std::env::var("TARGET").unwrap();
-    
+
     // windows includes
     if env.contains("windows") {
         build.include("bx/include/compat/msvc");
