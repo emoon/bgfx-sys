@@ -4,9 +4,9 @@ authors = ["Daniel Collin <daniel@collin.com>"]
 categories = ["rendering::graphics-api"]
 description = "low-level FFI bindings for bgfx"
 repository = "https://github.com/emoon/bgfx-sys"
-documentation = "https://docs.rs/bgfx-sys/0.10/bgfx-sys"
+documentation = "https://docs.rs/bgfx-sys/0.14/bgfx-sys"
 name = "bgfx-sys"
-version = "0.13.0"
+version = "0.14.0"
 edition = "2018"
 build = "build.rs"
 
@@ -26,7 +26,7 @@ exclude = [
 ]
 
 [badges]
-maintenance = { status = "actively-developed" }
+maintenance = { status = "looking-for-maintainer" }
 
 [dev-dependencies]
 glfw = "0.41"
